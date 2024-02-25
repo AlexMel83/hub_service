@@ -1,18 +1,29 @@
 <template>
-    <div class="mt-7 max-w-sm mx-auto text-center card">
-        <p class="mt-7 text-7xl font-bold">{{ error.statusCose }}</p>
-        <p class="mt-7 text-6xl">Ooops.</p>
-        <p class="mt-7">{{ error.message }}</p>
-        <button class="btn my-7" @click="handleClearError">Go Home...</button>
-    </div>
+  <TheHeaderMain />
+  <NuxtLayout name="404">
+      <div>
+        <button class="button" @click="goBack" >Повернутися на головну</button>
+      </div>
+  </NuxtLayout>
+  <TheFooterMain />
 </template>
 
-<script setup>
-    defineProps(['error']);
-
-    const handleClearError = ()=> clearError({redirect: '/'})
+<script>
+export default {
+  methods: {
+    goBack() {
+      this.$router.push('/')
+    }
+  }
+}
 </script>
 
 <style scoped>
-
+.button {
+  width: 306px;
+  padding: 12px 24px;
+  background: var(--1, #09273B);
+  color: white;
+  border-radius: 6px;
+}
 </style>

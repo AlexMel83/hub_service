@@ -1,0 +1,16 @@
+[
+  { "id": 1, "title": "places_p", "src": "places_p.svg" },
+  { "id": 2, "title": "places_rectangle", "src": "places_rectangle.svg" },
+  { "id": 3, "title": "two_rows_of_seats", "src": "two_rows_of_seats.svg" },
+  { "id": 4, "title": "places_two_circles", "src": "places_two_circles.svg" },
+  {
+    "id": 5,
+    "title": "places _two_by_twelve",
+    "src": "places _two_by_twelve.svg"
+  },
+  {
+    "id": 6,
+    "title": "eight_seats_in_a_circle",
+    "src": "eight_seats_in_a_circle.svg"
+  }
+]

@@ -1,0 +1,11 @@
+version: '3.7'
+services:
+  eduhub_nuxt:
+    working_dir: /app
+    env_file: .env
+    volumes:
+      - .:/app
+    build:
+      context: .
+      dockerfile: ./docker/app/DockerFile
+    entrypoint: /entrypoint.sh
