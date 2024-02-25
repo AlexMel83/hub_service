@@ -18,7 +18,7 @@
     //     method: 'post',
     //     body: {age: 30}
     // })
-    const {data} = await useFetch('/api/eduhub')
+    const {data} = await useFetch('/api/currency/GBP')
 </script>
 
 <style scoped>
