@@ -25,7 +25,7 @@
         <a href="">
           <img
             class="location-img"
-            src="~assets/icon_location.png"
+            src="./../../assets/icon_location.png"
             alt="local"
           />
         </a>
@@ -56,13 +56,13 @@
       <div class="telephone-emil-desktop">
         <h2 class="telephone-img-coworcing-mobile-off">
           <a :href="'tel:' + item.phoneNumber.replace(/\D/g, '')">
-            <img src="~/public/telephone_coworking_desktop.svg" />
+            <img src="./../../public/telephone_coworking_desktop.svg" />
             {{ item.phoneNumber }}
           </a>
         </h2>
         <h2 class="telephone-img-coworcing-mobile-off">
           <a v-if="item.email" :href="'mailto:' + item.email" target="_blank">
-            <img src="~/public/email.svg" />{{ item.email }}
+            <img src="./../../public/email.svg" />{{ item.email }}
           </a>
         </h2>
       </div>
@@ -90,7 +90,7 @@
         <div class="currency-dollar-desktop">
           <img
             class="desktop-currency-dollar-icon"
-            src="~assets/spaces_images/money.svg"
+            src="./../../assets/spaces_images/money.svg"
           />
           <p class="text-icon-desktop">Від {{ item.firstPrice }}</p>
           <p class="text-icon-desktop">До {{ item.lastPrice }}</p>
@@ -115,7 +115,7 @@
         <div class="currency-dollar-mobile">
           <img
             class="desktop-currency-dollar-icon"
-            src="~assets/spaces_images/money.svg"
+            src="./../../assets/spaces_images/money.svg"
           />
           <div class="box-price">
             <p class="text-icon-desktop">Від {{ item.firstPrice }}</p>
@@ -174,9 +174,9 @@
 </template>
 
 <script>
-import spacesData from "~~/mixins/spacesData";
-import CoworkingImg from "../components/spacesComponents/Coworking.vue";
-import ModalComponents from "~/components/modal/ModalComponents.vue";
+import spacesData from "./../../mixins/spacesData";
+import CoworkingImg from "./../../components/spacesComponents/Coworking.vue";
+import ModalComponents from "./../../components/modal/ModalComponents.vue";
 export default {
   components: {
     CoworkingImg,

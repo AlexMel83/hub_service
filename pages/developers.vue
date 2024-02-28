@@ -630,6 +630,6 @@
   </script>
   
   <style scoped>
-  @import "~/assets/css/developers.css";
+  @import "./../assets/css/developers.css";
   </style>
   

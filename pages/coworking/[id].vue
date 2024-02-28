@@ -54,7 +54,7 @@
               <div class="people flex">
                 <div>
                   <img
-                    src="~assets/spaces_images/people-white.svg"
+                    src="./../../assets/spaces_images/people-white.svg"
                     alt="people"
                   />
                 </div>
@@ -64,7 +64,7 @@
               </div>
               <div class="time flex">
                 <div>
-                  <img src="~assets/spaces_images/clock-white.svg" alt="time" />
+                  <img src="./../../assets/spaces_images/clock-white.svg" alt="time" />
                 </div>
                 <div class="time-info">
                   <p class="weekday">
@@ -84,7 +84,7 @@
               <div class="price flex">
                 <div>
                   <img
-                    src="~assets/spaces_images/money-white.svg"
+                    src="./../../assets/spaces_images/money-white.svg"
                     alt="price"
                   />
                 </div>
@@ -100,7 +100,7 @@
               <div class="contacts-box">
                 <div class="tel">
                   <a :href="'tel:' + item.phone" class="contact">
-                    <img src="~assets/spaces_images/phone-white.svg" />
+                    <img src="./../../assets/spaces_images/phone-white.svg" />
                     {{ item.phone }}
                   </a>
                 </div>
@@ -111,7 +111,7 @@
                     target="_blank"
                     class="contact"
                   >
-                    <img src="~assets/spaces_images/email-white.svg" />
+                    <img src="./../../assets/spaces_images/email-white.svg" />
                     {{ item.email }}
                   </a>
                 </div>
@@ -120,7 +120,7 @@
                   <a href="" class="contact">
                     <img
                       class="location-img"
-                      src="~assets/spaces_images/location-white.svg"
+                      src="./../../assets/spaces_images/location-white.svg"
                       alt="local"
                     />
                     <span class="address">{{ item.address }}</span>
@@ -147,14 +147,14 @@
       <div class="info block">
         <div class="people flex">
           <div>
-            <img src="~assets/spaces_images/people-black.svg" alt="people" />
+            <img src="./../../assets/spaces_images/people-black.svg" alt="people" />
           </div>
           <p>Робочих місць {{ item.amount }}</p>
         </div>
 
         <div class="time flex">
           <div>
-            <img src="~assets/spaces_images/clock-black.svg" alt="time" />
+            <img src="./../../assets/spaces_images/clock-black.svg" alt="time" />
           </div>
           <div class="time-info">
             <p class="weekday">
@@ -167,7 +167,7 @@
         </div>
         <div class="price flex">
           <div>
-            <img src="~assets/spaces_images/money-black.svg" alt="price" />
+            <img src="./../../assets/spaces_images/money-black.svg" alt="price" />
           </div>
           <div class="price-info">
             <p>Від {{ item.first_price }} грн</p>
@@ -176,13 +176,13 @@
         </div>
         <div class="tel">
           <a :href="'tel:' + item.phone" class="flex">
-            <img src="~assets/spaces_images/phone-black.svg" />
+            <img src="./../../assets/spaces_images/phone-black.svg" />
             {{ item.phone }}
           </a>
         </div>
         <div class="email" v-if="item.email">
           <a :href="'mailto:' + item.email" target="_blank" class="flex">
-            <img src="~assets/spaces_images/email-black.svg" />
+            <img src="./../../assets/spaces_images/email-black.svg" />
             {{ item.email }}
           </a>
         </div>
@@ -190,7 +190,7 @@
           <a href="" class="flex">
             <img
               class="location-img"
-              src="~assets/spaces_images/location-black.svg"
+              src="./../../assets/spaces_images/location-black.svg"
               alt="local"
             />
             {{ item.address }}
@@ -365,7 +365,7 @@ const formatSeats = (count) => {
 </script>
 
 <style scoped>
-@import "./../../src/styles.css";
+@import "./../../assets/css/style.css";
 
 .modal-registration-wrapper {
   background-color: rgba(9, 39, 59, 0.2);

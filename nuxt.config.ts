@@ -10,8 +10,8 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   css: [
     'vuetify/lib/styles/main.sass',
-    '~/src/developers.css',
-    '~/src/styles.css',
+    '~/assets/css/developers.css',
+    '~/assets/css/style.css',
   ],
   build: {
     transpile: ['vuetify'],

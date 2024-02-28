@@ -1,7 +1,7 @@
 <template>
   <div class="wrapper-manager-coworking">
     <button class="btn-edit" @click="navigateTo('/manager/edit')">
-      <img src="~assets/icon_edit.png" alt="edit" />
+      <img src="./../../assets/icon_edit.png" alt="edit" />
     </button>
     <div class="basic-information">
       <h2 class="indent-mng-bnt">Основна інформація</h2>

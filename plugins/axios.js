@@ -1,7 +1,7 @@
 import axios from "axios";
 
-const baseURL = "https://hub-api.intita.com";
-// const baseURL = "http://localhost:4041";
+// const baseURL = "https://hub-api.intita.com";
+const baseURL = "http://localhost:4041";
 
 let api, tokenAxios;
 
