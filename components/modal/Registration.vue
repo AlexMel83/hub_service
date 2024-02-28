@@ -1,5 +1,5 @@
 <template>
-  <Form class="wrapper" @submit="onSubmit">
+  <form class="wrapper" @submit="onSubmit">
     <h1>Зареєструватися</h1>
     <div class="user-selection">
       <div>
@@ -289,17 +289,18 @@ function showRegUser() {
     ? (userRole.value = "user")
     : (userRole.value = "manager");
 }
+
+import { defineEmits } from 'vue';
+const { emit } = defineEmits();
+
+const passwordError = ref("");
+
+const openLogin = () => {
+  emit("openLoginComponent");
+};
+
 </script>
  
-<script>
-export default {
-  methods: {
-    openLogin() {
-      this.$emit("openLoginComponent");
-    },
-  },
-};
-</script>
   <style scoped>
 .error-text {
   color: red;

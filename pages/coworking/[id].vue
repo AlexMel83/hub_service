@@ -365,8 +365,11 @@ const formatSeats = (count) => {
 </script>
 
 <style scoped>
-@import "~/assets/css/style.css";
+@import "./../../src/styles.css";
 
+.modal-registration-wrapper {
+  background-color: rgba(9, 39, 59, 0.2);
+}
 .coworking-page {
   background-color: var(--space-bg-mob);
   font-family: "Inter", sans-serif;

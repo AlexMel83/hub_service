@@ -1,5 +1,5 @@
 <template>
-  <Form class="wrapper" @submit="onSubmit">
+  <form class="wrapper" @submit="onSubmit">
     <h1>Увійти</h1>
     <div class="wrapper-login-using">
       <div class="login-using">
@@ -101,17 +101,14 @@ const passwordValidation = defineInputBinds("passwordValidation");
 let showPassword = ref(false);
 let textErrorLogin = ref("");
 let textPasswordError = ref("");
+
 const { $api } = useNuxtApp();
 
-emailValidation.value.value = localStorage.getItem("queryEmail")
-console.log('before',emailValidation.value.value)
 function isShow() {
   showPassword.value = !showPassword.value;
 }
 const onSubmit = handleSubmit(async (values) => {
-  console.log('submit',emailValidation.value.value)
   try {
-    values.emailValidation = localStorage.getItem("queryEmail") ?? values.emailValidation;
     await $api
       .post("/login", {
         email: values.emailValidation,
@@ -138,15 +135,11 @@ const onSubmit = handleSubmit(async (values) => {
       });
   } catch (error) {
     if (error.response.data.message.includes("не знайдений")) {
-      textErrorLogin.value = "даний email не зареєстрований";
+      textErrorLogin.value = "даний email незареєстрований";
     } else if (error.response.data.message == "Невірний пароль") {
       textPasswordError.value = "невірний пароль";
     }
   }
-});
-
-const emailValue = computed(() => {
-  return localStorage.getItem("queryEmail") || "";
 });
 </script>
 
