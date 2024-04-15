@@ -1,12 +1,16 @@
 <template>
   <div class="other-page">
-    <HeaderAuthUsers v-if="role !== 'unknown'" />
-    <TheHeaderMain v-else />
-
-    <NuxtPage></NuxtPage>
+    <HeaderAuthUsers />
+    <div class="auth-user-container">
+      <div class="auth-menu">
+        <component :is="getMenu()" />
+      </div>
+      <div class="auth-user-content">
+        <NuxtPage></NuxtPage>
+      </div>
+    </div>
 
     <TheFooterMain ref="footerRef" />
-
     <button
       id="scrollToTop"
       :class="{ 'in-footer': isScrollToTopInFooter, show: showScrollToTop }"
@@ -49,15 +53,20 @@
     </button>
   </div>
 </template>
-
 <script>
-import TheFooterMain from "../components/TheFooterMain.vue";
+import TheFooterMain from "~/components/TheFooterMain.vue";
 import HeaderAuthUsers from "~/layouts/headers/HeaderAuthUsers.vue";
+import ManagerMenu from "~/layouts/menuAuthUsers/ManagerMenu.vue";
+import UserMenu from "~/layouts/menuAuthUsers/UserMenu.vue";
+import AdminMenu from "~/layouts/menuAuthUsers/AdminMenu.vue";
 
 export default {
   components: {
     TheFooterMain,
     HeaderAuthUsers,
+    ManagerMenu,
+    UserMenu,
+    AdminMenu,
   },
   data() {
     return {
@@ -94,6 +103,16 @@ export default {
         this.$store.state.userRole = localStorage.getItem("userRole");
       } else {
         this.$store.state.userRole = "unknown";
+      }
+    },
+    getMenu() {
+      switch (this.role) {
+        case "manager":
+          return ManagerMenu;
+        case "user":
+          return UserMenu;
+        case "admin":
+          return AdminMenu;
       }
     },
   },
@@ -149,7 +168,32 @@ export default {
   visibility: visible;
 }
 
+.auth-menu {
+  display: none;
+}
+.auth-user-content {
+  padding: 0px 16px;
+}
+
 @media (min-width: 768px) {
+  .auth-user-container {
+    display: flex;
+    flex-direction: row;
+    padding: 50px 10px;
+  }
+
+  .auth-user-container .auth-menu {
+    display: block;
+    padding: 40px 0;
+  }
+
+  .auth-user-container .auth-user-content {
+    border: 1px solid var(--text-color);
+    width: 100%;
+    height: 100%;
+    padding: 0px 24px;
+  }
+
   #scrollToTop {
     bottom: 24px;
     right: 24px;
@@ -177,6 +221,16 @@ export default {
 
   #scrollToTop:active path {
     fill: var(--btn-border);
+  }
+}
+
+@media (min-width: 1024px) {
+  .auth-user-container {
+    padding: 50px 6.46%;
+  }
+
+  .auth-user-container .auth-menu {
+    padding: 40px 0 40px 2.78%;
   }
 }
 

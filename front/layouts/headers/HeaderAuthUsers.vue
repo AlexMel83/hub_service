@@ -8,13 +8,12 @@
           </NuxtLink>
         </div>
         <div class="header-buttons">
-          <template v-if="isAuthed">
-            <div class="is-user bold">
-              <span>{{ this.$store.state.name }}</span>
-              <span>{{ this.$store.state.surname }}</span>
-            </div>
-          </template>
-          <span class="lang-active">Ua &nbsp; </span><span> | En</span>
+          <!-- <div class="lang">
+            <span class="lang-active">Ua &nbsp; </span><span> | En</span>
+          </div> -->
+          <div class="auth-user-name">
+            <UserName />
+          </div>
           <v-btn icon @click="toggleMenu" class="burger">
             <img
               v-if="!menuOpen"
@@ -23,21 +22,13 @@
             />
             <img v-else src="~/assets/profile.svg" alt="Profile Icon" />
           </v-btn>
-          <template v-if="!isAuthed">
-            <v-btn class="header-btn" @click="openRegistration">
-              Зареєструватися
-            </v-btn>
-            <v-btn class="header-btn" @click="openLogin"> Увійти</v-btn>
-          </template>
         </div>
       </div>
       <div class="menu" v-if="menuOpen">
-        <Login
-          v-if="menuLogin"
-          @openRegComponent="changeCompenent"
-          :initialEmail="email"
-        />
-        <Registration v-else @openLoginComponent="changeCompenent" />
+        <div class="mobile-auth-user-name">
+          <UserName />
+        </div>
+        <component :is="getMenu()" />
       </div>
       <p class="header-text">
         <span class="bold">EduHUB</span> - обирай коворкінг для ефективного
@@ -45,79 +36,62 @@
       </p>
     </div>
   </div>
-  <ModalComponents @closeModal="closeModal" :initialEmail="email" />
 </template>
 
 <script>
-import ModalComponents from "~/components/modal/ModalComponents.vue";
-import Login from "~/components/modal/Login.vue";
-import Registration from "~/components/modal/Registration.vue";
-import { useStore } from "vuex";
+import ManagerMenu from "~/layouts/menuAuthUsers/ManagerMenu.vue";
+import UserMenu from "~/layouts/menuAuthUsers/UserMenu.vue";
+import AdminMenu from "~/layouts/menuAuthUsers/AdminMenu.vue";
+import UserName from "~/layouts/headers/UserName.vue";
 
 export default {
-  name: "Header",
   components: {
-    ModalComponents,
-    Login,
-    Registration,
+    ManagerMenu,
+    UserMenu,
+    AdminMenu,
+    UserName,
   },
   data() {
     return {
       menuOpen: false,
-      menuLogin: true,
-      isModalOpen: false,
-      email: "",
     };
   },
   computed: {
-    isAuthed() {
-      return this.$store.state.isAuthed;
-    },
     isHomePage() {
       return this.$route.path === "/";
     },
-    isMenuOpen() {
-      return this.$store.state.isMenuOpen;
+    role() {
+      return this.$store.state.userRole;
     },
   },
   methods: {
     toggleMenu() {
       this.menuOpen = !this.menuOpen;
-      this.$store.commit("toggleMenu");
-    },
-    closeModal() {
-      document.body.style.position = "";
-    },
-    openRegistration() {
-      document.body.style.position = "fixed";
-      this.$bus.$emit("Modal", {
-        showRegistration: true,
-        openModal: true,
-      });
-    },
-    openLogin() {
-      if (window.innerWidth > 768) {
-        document.body.style.position = "fixed";
-        this.$bus.$emit("Modal", {
-          showLogin: true,
-          openModal: true,
-        });
-      }
     },
     changeCompenent() {
       this.menuLogin = !this.menuLogin;
     },
+    getMenu() {
+      switch (this.role) {
+        case "manager":
+          return ManagerMenu;
+        case "user":
+          return UserMenu;
+        case "admin":
+          return AdminMenu;
+      }
+    },
+    setUserData() {
+      if (localStorage.getItem("authUserData")) {
+        this.$store.commit(
+          "setUserData",
+          JSON.parse(localStorage.getItem("authUserData")),
+        );
+      }
+    },
   },
   mounted() {
-    const emailRegex = /([\w.%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,})/;
-    if (this.$route.query.email) {
-      this.email = this.$route.query.email;
-      const match = this.email.match(emailRegex);
-      if (match) {
-        this.email = match[0];
-        this.openLogin();
-      } else this.email = "";
-    }
+    this.setUserData();
   },
 };
 </script>
@@ -173,6 +147,10 @@ export default {
   padding: 3px 0 0 0;
 }
 
+.lang {
+  margin-right: 30px;
+}
+
 .header-menu-btn {
   width: 100%;
   max-width: 343px;
@@ -219,6 +197,13 @@ export default {
   margin-right: 5px;
 }
 
+.auth-user-name {
+  display: none;
+}
+.mobile-auth-user-name {
+  margin-bottom: 50px;
+}
+
 @media (min-width: 768px) {
   .header-main.home-page {
     background-image: url("~/assets/header_bg.png");
@@ -254,7 +239,7 @@ export default {
 
   .header-btn:hover {
     background-color: var(--white-color);
-    color: var(--btn-border) !important;
+    color: var(--btn-border);
   }
 
   .header-buttons {
@@ -263,6 +248,11 @@ export default {
   }
   .menu {
     display: none;
+  }
+
+  .auth-user-name {
+    display: block;
+    margin-right: 20px;
   }
 
   @media (min-width: 1024px) {

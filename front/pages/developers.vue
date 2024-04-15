@@ -646,5 +646,5 @@ export default {
 </script>
 
 <style scoped>
-@import "./../assets/css/developers.css";
+@import "~/assets/src/developers.css";
 </style>

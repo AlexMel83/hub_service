@@ -1,4 +1,26 @@
 <template>
+  <!-- <section class="box">
+    <div class="search">
+      <v-autocomplete class="city"
+      v-model="selectedItemCity"
+      :items="itemsFromServerCity"
+      :label="dynamicLabelCity">
+      </v-autocomplete>
+      <v-btn>Дата</v-btn>
+      <v-btn>Час</v-btn>
+      <v-autocomplete class="number-of-people"
+      v-model="selectedItemNumberOfPeople"
+      :items="itemsFromServerNumberOfPeople"
+      :label="dynamicLabelNumberOfPeople">
+      </v-autocomplete>
+      <v-autocomplete class="space"
+      v-model="selectedItemSpace"
+      :items="itemsFromServerSpace"
+      :label="dynamicLabelSpace">
+      </v-autocomplete>
+      <v-btn><img src="~assets\klipartz.com.png"></v-btn>
+    </div>
+  </section> -->
   <div class="coworking-page">
     <div class="box-covork">
       <h1 class="coworking-space-name-text desktop">{{ item.name }}</h1>
@@ -25,7 +47,7 @@
         <a href="">
           <img
             class="location-img"
-            src="./../../assets/icon_location.png"
+            src="~assets/icon_location.png"
             alt="local"
           />
         </a>
@@ -56,13 +78,14 @@
       <div class="telephone-emil-desktop">
         <h2 class="telephone-img-coworcing-mobile-off">
           <a :href="'tel:' + item.phoneNumber.replace(/\D/g, '')">
-            <img src="./../../public/telephone_coworking_desktop.svg" />
+            <!-- <img src="~/public/telephone_coworking_desktop.svg" /> -->
             {{ item.phoneNumber }}
           </a>
         </h2>
         <h2 class="telephone-img-coworcing-mobile-off">
           <a v-if="item.email" :href="'mailto:' + item.email" target="_blank">
-            <img src="./../../public/email.svg" />{{ item.email }}
+            <!-- <img src="~/public/email.svg" /> -->
+            {{ item.email }}
           </a>
         </h2>
       </div>
@@ -75,7 +98,7 @@
       </div>
       <div class="about-space-desktop">
         <div class="desktop-clock">
-          <img class="desktop-clock-icon" src="~/public/clock.svg" />
+          <!-- <img class="desktop-clock-icon" src="~/public/clock.svg" /> -->
           <p class="text-icon-desktop">
             Пн-Пт {{ item.businessDayStart }}-{{ item.businessDayEnd }}
           </p>
@@ -84,13 +107,13 @@
           </p>
         </div>
         <div class="desktop-people-people">
-          <img class="people-people" src="~/public/people.svg" />
+          <!-- <img class="people-people" src="~/public/people.svg" /> -->
           <p class="text-icon-desktop">Робочих місць {{ item.amount }}</p>
         </div>
         <div class="currency-dollar-desktop">
           <img
             class="desktop-currency-dollar-icon"
-            src="./../../assets/spaces_images/money.svg"
+            src="~assets/spaces_images/money.svg"
           />
           <p class="text-icon-desktop">Від {{ item.firstPrice }}</p>
           <p class="text-icon-desktop">До {{ item.lastPrice }}</p>
@@ -98,11 +121,11 @@
       </div>
       <div class="about-space-mobile">
         <div class="mobile-people-people">
-          <img class="people-people" src="~/public/people.svg" />
+          <!-- <img class="people-people" src="~/public/people.svg" /> -->
           <p class="text-icon-desktop">Робочих місць {{ item.amount }}</p>
         </div>
         <div class="mobile-clock">
-          <img class="desktop-clock-icon" src="~/public/clock.svg" />
+          <!-- <img class="desktop-clock-icon" src="~/public/clock.svg" /> -->
           <div class="box-days">
             <p class="text-icon-desktop">
               Пн-Пт {{ item.businessDayStart }}-{{ item.businessDayEnd }}
@@ -115,7 +138,7 @@
         <div class="currency-dollar-mobile">
           <img
             class="desktop-currency-dollar-icon"
-            src="./../../assets/spaces_images/money.svg"
+            src="~assets/spaces_images/money.svg"
           />
           <div class="box-price">
             <p class="text-icon-desktop">Від {{ item.firstPrice }}</p>
@@ -177,12 +200,10 @@
 </template>
 
 <script>
-import spacesData from "./../../mixins/spacesData";
-import CoworkingImg from "./../../components/spacesComponents/Coworking.vue";
-import ModalComponents from "./../../components/modal/ModalComponents.vue";
+import spacesData from "~~/mixins/spacesData";
+import ModalComponents from "~/components/modal/ModalComponents.vue";
 export default {
   components: {
-    CoworkingImg,
     ModalComponents,
   },
   mixins: [spacesData],

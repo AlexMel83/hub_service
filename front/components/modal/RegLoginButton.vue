@@ -30,6 +30,11 @@ button {
   margin-top: 24px;
 }
 
+button:hover,
+button:active {
+  color: white;
+}
+
 @media (min-width: 768px) {
   button {
     margin-top: 12px;

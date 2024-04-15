@@ -150,7 +150,7 @@ const onSubmit = handleSubmit(async (values) => {
       })
       .then((response) => {
         if (response) {
-          router.push("/manager");
+          router.push("/user");
         }
       });
   } catch (error) {
@@ -195,12 +195,9 @@ function onInputPhone(event) {
   phoneValidation = event.target.value;
 }
 
-function setManagerData() {
-  if (localStorage.getItem("managerData")) {
-    store.commit(
-      "setManagerData",
-      JSON.parse(localStorage.getItem("managerData")),
-    );
+function setUserData() {
+  if (localStorage.getItem("userData")) {
+    store.commit("setUserData", JSON.parse(localStorage.getItem("userData")));
   }
 }
 function setActiveTab() {
@@ -208,7 +205,7 @@ function setActiveTab() {
 }
 
 onMounted(() => {
-  setManagerData();
+  setUserData();
   setActiveTab();
 });
 </script>
@@ -273,6 +270,7 @@ onMounted(() => {
 .edit-coworking {
   position: relative;
 }
+
 .edit-coworking .input-error {
   border: 1px solid red;
 }
@@ -288,6 +286,7 @@ onMounted(() => {
   flex-direction: row;
   justify-content: flex-end;
 }
+
 .btn.edit {
   width: 200px;
   height: 46px;
@@ -300,6 +299,7 @@ onMounted(() => {
   .indent-mng-bnt {
     text-align: center;
   }
+
   .basic-information .basic-inp {
     width: 343px;
   }
@@ -333,6 +333,7 @@ onMounted(() => {
     width: 35%;
     margin-bottom: 0px;
   }
+
   .basic-information .basic-inp {
     width: 300px;
   }

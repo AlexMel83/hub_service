@@ -1,6 +1,6 @@
 <template>
   <div class="wrapper-manager-coworking" style="min-height: 100vh">
-    <button class="btn-edit" @click="navigateTo('/manager/edit')">
+    <button class="btn-edit" @click="navigateTo('/user/edit')">
       <img src="~assets/icon_edit.png" alt="edit" />
     </button>
     <div class="basic-information">
@@ -80,7 +80,7 @@ export default {
   },
 
   mounted() {
-    this.setManagerData();
+    this.setUserData();
     this.getUserData();
   },
   computed: {
@@ -89,11 +89,11 @@ export default {
     },
   },
   methods: {
-    setManagerData() {
-      if (localStorage.getItem("managerData")) {
+    setUserData() {
+      if (localStorage.getItem("userData")) {
         this.$store.commit(
-          "setManagerData",
-          JSON.parse(localStorage.getItem("managerData")),
+          "setUserData",
+          JSON.parse(localStorage.getItem("userData")),
         );
       }
     },
@@ -172,10 +172,12 @@ export default {
 .basic-information .basic-inp {
   width: 95%;
 }
+
 @media (min-width: 375px) {
   .indent-mng-bnt {
     text-align: center;
   }
+
   .basic-information .basic-inp {
     width: 343px;
   }
@@ -209,6 +211,7 @@ export default {
     width: 35%;
     margin-bottom: 0px;
   }
+
   .basic-information .basic-inp {
     width: 300px;
   }

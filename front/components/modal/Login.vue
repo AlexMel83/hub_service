@@ -15,6 +15,16 @@
       <label>E-mail*</label>
       <div>
         <input
+          v-if="emailProps && emailProps.length > 0"
+          name="email"
+          type="email"
+          :class="{ 'input-error': errors.emailValidation }"
+          maxlength="30"
+          v-bind="emailValidation"
+          @input="textErrorLogin = ''"
+        />
+        <input
+          v-else
           name="email"
           type="email"
           :class="{ 'input-error': errors.emailValidation }"
@@ -67,25 +77,37 @@
       <span>Забули свій пароль?</span>
     </div>
     <RegLoginButton textContent="Увійти" />
+    <button class="link-btn" @click="openReg">Зареєструватися</button>
   </form>
-  <button class="link-btn" @click="openReg">Зареєструватися</button>
 </template>
 <script setup>
 import * as yup from "yup";
 import { useForm } from "vee-validate";
 import RegLoginButton from "~/components/modal/RegLoginButton.vue";
 import { ref } from "vue";
-import { useRouter } from "vue-router";
-
-const router = useRouter();
+import { useStore } from "vuex";
+const store = useStore();
 const bus = useNuxtApp().$bus;
+
+const props = defineProps({
+  initialEmail: {
+    type: String,
+    required: true,
+  },
+});
+const emailProps = ref(props.initialEmail);
+
+// const openReg = () => {
+//   console.log("opem reg");
+//   context.emit("openRegComponent");
+// };
 
 const { defineInputBinds, errors, handleSubmit } = useForm({
   validationSchema: yup.object({
     emailValidation: yup
       .string()
       .email("поле заповнено некоректно")
-      .required("Це поле є обов’язковим для заповнення")
+      .min(2, "Це поле є обов’язковим для заповнення")
       .matches(
         /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,})+$/,
         "Поле заповнено невірно",
@@ -93,50 +115,57 @@ const { defineInputBinds, errors, handleSubmit } = useForm({
     passwordValidation: yup
       .string()
       .required("Це поле є обов’язковим для заповнення")
-      .min(2, "Пароль повинен містити принаймні 2 символа"),
+      .min(3, "Пароль повинен містити принаймні 4 символа"),
   }),
 });
-const emailValidation = defineInputBinds("emailValidation");
+const emailValidation = defineInputBinds("emailValidation", emailProps.value);
 const passwordValidation = defineInputBinds("passwordValidation");
 let showPassword = ref(false);
 let textErrorLogin = ref("");
 let textPasswordError = ref("");
+
+if (emailProps.value && emailProps.value.length) {
+  emailValidation.value.value = emailProps.value;
+}
 
 const { $api } = useNuxtApp();
 
 function isShow() {
   showPassword.value = !showPassword.value;
 }
-const onSubmit = handleSubmit(async (values) => {
-  try {
-    await $api
-      .post("/login", {
-        email: values.emailValidation,
-        password: values.passwordValidation,
-      })
-      .then((response) => {
-        if (response.data.statusCode !== 401) {
-          localStorage.setItem("access_token", response.data.accessToken);
-          localStorage.setItem("refreshToken", response.data.refreshToken);
-          localStorage.setItem("userId", response.data.user.id);
-          localStorage.setItem("userRole", response.data.user.role);
-          localStorage.setItem("email", emailValidation.value.value);
-          textErrorLogin.value = "";
-          textErrorLogin.value = "";
-          response.data.user.role == "manager"
-            ? router.push("/manager")
-            : router.push("/");
 
-          bus.$emit("Modal", {
-            openModal: false,
-          });
-          document.body.style.position = "";
-        }
-      });
+const onSubmit = handleSubmit(async (values) => {
+  const postObject = {
+    email: values.emailValidation,
+    password: values.passwordValidation,
+  };
+  if (emailProps.value === emailValidation.value.value) {
+    postObject.email = emailProps.value;
+  }
+
+  try {
+    await $api.post("/login", postObject).then((response) => {
+      if (response.data.statusCode !== 401) {
+        store.commit("getUserData", response.data.user);
+        localStorage.setItem("access_token", response.data.accessToken);
+        localStorage.setItem("userId", response.data.user.id);
+        store.commit("setRole", response.data.user.role);
+        localStorage.setItem("email", emailValidation.value.value);
+        textErrorLogin.value = "";
+        textErrorLogin.value = "";
+        bus.$emit("Modal", {
+          openModal: false,
+        });
+        document.body.style.position = "";
+      }
+    });
   } catch (error) {
+    console.log(error);
     if (error.response.data.message.includes("не знайдений")) {
       textErrorLogin.value = "даний email незареєстрований";
-    } else if (error.response.data.message == "Невірний пароль") {
+    } else if (error.response.data.message.includes("не активовано")) {
+      textErrorLogin.value = "обліковий запис не активовано, перевірте пошту";
+    } else if (error.response.data.message.includes("Невірний пароль")) {
       textPasswordError.value = "невірний пароль";
     }
   }
@@ -296,6 +325,7 @@ input:focus {
   margin-top: 24px;
   margin-bottom: 32px;
   font-size: 18px;
+  border-radius: 10px;
 }
 
 input:autofill {

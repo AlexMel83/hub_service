@@ -6,9 +6,10 @@ export default defineNuxtConfig({
 
   devtools: { enabled: true },
   css: [
+    "@mdi/font/css/materialdesignicons.min.css",
     "vuetify/lib/styles/main.sass",
-    "~/assets/css/developers.css",
-    "~/assets/css/style.css",
+    "~/assets/src/developers.css",
+    "~/assets/src/styles.css",
   ],
   build: {
     transpile: ["vuetify"],
@@ -41,12 +42,6 @@ export default defineNuxtConfig({
           name: "viewport",
           content:
             "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui",
-        },
-      ],
-      link: [
-        {
-          rel: "stylesheet",
-          href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap",
         },
       ],
     },

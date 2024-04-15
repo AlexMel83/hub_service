@@ -1,14 +1,24 @@
 <template>
-  <div class="coworking-page">
+  <div
+    class="coworking-page animate-slide-from-header"
+    :class="{ blurred: isMenuOpen }"
+  >
     <div class="main">
       <div class="main-wrapper block">
         <div class="mob-main">
           <h1>{{ item.coworking_name }}</h1>
           <div class="main-photo-mob">
             <img
+              v-if="item.coworking_photo"
+              :src="`${baseURL}/${item.coworking_photo}`"
               class="photo"
-              :src="`${item.coworking_photo}`"
               alt="coworking photo"
+            />
+            <img
+              v-else
+              src="./../../public/default-coworking.png"
+              alt="coworking photo"
+              class="photo"
             />
             <div class="rating">
               <v-rating
@@ -31,9 +41,16 @@
               <h1>{{ item.coworking_name }}</h1>
               <div class="main-photo">
                 <img
+                  v-if="item.coworking_photo"
+                  :src="`${baseURL}/${item.coworking_photo}`"
                   class="photo"
-                  :src="`${item.coworking_photo}`"
                   alt="coworking photo"
+                />
+                <img
+                  v-else
+                  src="./../../public/default-coworking.png"
+                  alt="coworking photo"
+                  class="photo"
                 />
                 <div class="rating">
                   <v-rating
@@ -51,23 +68,25 @@
               </div>
             </div>
             <div class="right">
-              <div class="people flex">
+              <!-- <div class="people flex">
                 <div>
-                  <img
-                    src="./../../assets/spaces_images/people-white.svg"
-                    alt="people"
-                  />
+                  <img src="~assets/spaces_images/people-white.svg" alt="people" />
                 </div>
                 <p>
                   Робочих місць <span class="big">{{ item.amount }}</span>
                 </p>
-              </div>
-              <div class="time flex">
+              </div> -->
+              <div
+                class="time flex"
+                v-if="
+                  item.workday_start &&
+                  item.workday_end &&
+                  item.dayoff_start &&
+                  item.dayoff_end
+                "
+              >
                 <div>
-                  <img
-                    src="./../../assets/spaces_images/clock-white.svg"
-                    alt="time"
-                  />
+                  <img src="~assets/spaces_images/clock-white.svg" alt="time" />
                 </div>
                 <div class="time-info">
                   <p class="weekday">
@@ -84,12 +103,9 @@
                   </p>
                 </div>
               </div>
-              <div class="price flex">
+              <!-- <div class="price flex">
                 <div>
-                  <img
-                    src="./../../assets/spaces_images/money-white.svg"
-                    alt="price"
-                  />
+                  <img src="~assets/spaces_images/money-white.svg" alt="price" />
                 </div>
                 <div class="price-info">
                   <p class="from">
@@ -99,11 +115,11 @@
                     До <span class="big">{{ item.last_price }} грн</span>
                   </p>
                 </div>
-              </div>
+              </div> -->
               <div class="contacts-box">
-                <div class="tel">
+                <div class="tel" v-if="item.phone">
                   <a :href="'tel:' + item.phone" class="contact">
-                    <img src="./../../assets/spaces_images/phone-white.svg" />
+                    <img src="~assets/spaces_images/phone-white.svg" />
                     {{ item.phone }}
                   </a>
                 </div>
@@ -114,16 +130,23 @@
                     target="_blank"
                     class="contact"
                   >
-                    <img src="./../../assets/spaces_images/email-white.svg" />
+                    <img src="~assets/spaces_images/email-white.svg" />
                     {{ item.email }}
                   </a>
                 </div>
 
-                <div class="map">
-                  <a href="" class="contact">
+                <div class="map" v-if="item.address">
+                  <a
+                    :href="
+                      'https://maps.google.com/?q=' +
+                      encodeURIComponent(item.address)
+                    "
+                    target="_blank"
+                    class="contact"
+                  >
                     <img
                       class="location-img"
-                      src="./../../assets/spaces_images/location-white.svg"
+                      src="~assets/spaces_images/location-white.svg"
                       alt="local"
                     />
                     <span class="address">{{ item.address }}</span>
@@ -134,7 +157,7 @@
                   <div v-for="socialItem in item.social" :key="socialItem.name">
                     <a :href="socialItem.link" target="_blank">
                       <img
-                        :src="'../' + socialItem.icon"
+                        :src="'../' + socialItem.src"
                         :alt="socialItem.name"
                       />
                     </a>
@@ -148,22 +171,24 @@
     </div>
     <div class="coworking-wrapper">
       <div class="info block">
-        <div class="people flex">
+        <!-- <div class="people flex">
           <div>
-            <img
-              src="./../../assets/spaces_images/people-black.svg"
-              alt="people"
-            />
+            <img src="~assets/spaces_images/people-black.svg" alt="people" />
           </div>
           <p>Робочих місць {{ item.amount }}</p>
-        </div>
+        </div> -->
 
-        <div class="time flex">
+        <div
+          class="time flex"
+          v-if="
+            item.workday_start &&
+            item.workday_end &&
+            item.dayoff_start &&
+            item.dayoff_end
+          "
+        >
           <div>
-            <img
-              src="./../../assets/spaces_images/clock-black.svg"
-              alt="time"
-            />
+            <img src="~assets/spaces_images/clock-black.svg" alt="time" />
           </div>
           <div class="time-info">
             <p class="weekday">
@@ -174,35 +199,38 @@
             </p>
           </div>
         </div>
-        <div class="price flex">
+        <!-- <div class="price flex">
           <div>
-            <img
-              src="./../../assets/spaces_images/money-black.svg"
-              alt="price"
-            />
+            <img src="~assets/spaces_images/money-black.svg" alt="price" />
           </div>
           <div class="price-info">
             <p>Від {{ item.first_price }} грн</p>
             <p>До {{ item.last_price }} грн</p>
           </div>
-        </div>
-        <div class="tel">
+        </div> -->
+        <div class="tel" v-if="item.phone">
           <a :href="'tel:' + item.phone" class="flex">
-            <img src="./../../assets/spaces_images/phone-black.svg" />
+            <img src="~assets/spaces_images/phone-black.svg" />
             {{ item.phone }}
           </a>
         </div>
         <div class="email" v-if="item.email">
           <a :href="'mailto:' + item.email" target="_blank" class="flex">
-            <img src="./../../assets/spaces_images/email-black.svg" />
+            <img src="~assets/spaces_images/email-black.svg" />
             {{ item.email }}
           </a>
         </div>
-        <div class="map">
-          <a href="" class="flex">
+        <div class="map" v-if="item.address">
+          <a
+            :href="
+              'https://maps.google.com/?q=' + encodeURIComponent(item.address)
+            "
+            target="_blank"
+            class="flex"
+          >
             <img
               class="location-img"
-              src="./../../assets/spaces_images/location-black.svg"
+              src="~assets/spaces_images/location-black.svg"
               alt="local"
             />
             {{ item.address }}
@@ -211,30 +239,12 @@
         <div class="social">
           <div v-for="socialItem in item.social" :key="socialItem.name">
             <a :href="socialItem.link" target="_blank">
-              <img :src="'../' + socialItem.icon" :alt="socialItem.name" />
+              <img :src="'../' + socialItem.src" :alt="socialItem.name" />
             </a>
           </div>
         </div>
       </div>
-      <div class="about">
-        <div class="block" v-if="item.seatingArrangements">
-          <h2 class="title-seats">Розташування місць</h2>
-          <div class="icons-container-places">
-            <div
-              class="icon-wrapper"
-              v-for="seatingArrangement in selectedseatingArrangement(
-                item.seatingArrangements,
-              )"
-              :key="seatingArrangement.name"
-            >
-              <img
-                class="icons-places"
-                :src="seatingArrangement.icon"
-                :alt="seatingArrangement.name"
-              />
-            </div>
-          </div>
-        </div>
+      <div class="about" v-if="item.description">
         <div class="block">
           <h2 class="title">Про нас</h2>
           <p class="description">{{ item.description }}</p>
@@ -242,7 +252,7 @@
       </div>
       <div
         class="services block"
-        v-if="selectedAdvantages(item.advantages).length > 0"
+        v-if="item && item.advantages && item.advantages.length > 0"
       >
         <h2 class="title">
           Безкоштовні послуги<br />
@@ -252,15 +262,19 @@
         <div
           class="services-wrapper"
           :class="{
-            'two-rows': selectedAdvantages(item.advantages).length > 4,
+            'two-rows': item.advantages.length > 4,
           }"
         >
           <div
             class="services-box flex"
-            v-for="advantage in selectedAdvantages(item.advantages)"
+            v-for="advantage in item.advantages"
             :key="advantage.name"
           >
-            <img :src="advantage.icon" :alt="advantage.name" />
+            <img
+              :src="`${baseURL}/${advantage.icon}`"
+              :alt="advantage.name"
+              :title="advantage.description"
+            />
             <p>{{ advantage.name }}</p>
           </div>
         </div>
@@ -281,26 +295,88 @@
             <div class="card spaces-box">
               <div class="photo">
                 <img
+                  v-if="space.space_photo"
+                  :src="`${baseURL}/${space.space_photo}`"
                   class="space-img"
-                  :src="space.space_photo"
                   :alt="space.space_name"
+                />
+                <img
+                  v-else
+                  src="./../../public/default-space.jpg"
+                  alt="space photo"
                 />
                 <div class="places" v-if="space.amount">
                   {{ formatSeats(space.amount) }}
                 </div>
+
+                <div class="favorite" v-if="authUser().role === 'user'">
+                  <v-tooltip
+                    :text="
+                      space.isFavorite
+                        ? 'Видалити зі збереженого'
+                        : 'Додати в збережені'
+                    "
+                  >
+                    <template v-slot:activator="{ props }">
+                      <v-btn @click="toggleFavorite(space)" v-bind="props">
+                        <v-icon :color="space.isFavorite ? '#AF3800' : ''"
+                          >mdi-heart</v-icon
+                        >
+                      </v-btn>
+                    </template>
+                  </v-tooltip>
+                </div>
               </div>
               <div class="space-info">
                 <p class="space-name">{{ space.space_name }}</p>
-              </div>
-              <div class="box-book-button">
-                <v-btn
-                  class="book-button"
-                  :class="{ visible: isHovered }"
-                  @click="openBookModal"
-                  v-if="item.coworking_name == 'EduHUB'"
-                  >Забронювати</v-btn
+                <p
+                  class="space-description"
+                  :class="{ expanded: space.showFullDescription }"
                 >
-                <ModalComponents @closeModal="closeModal" />
+                  {{
+                    space.showFullDescription
+                      ? space.description
+                      : space.description &&
+                          space.description.length > maxLength
+                        ? space.description.substring(0, maxLength) + "..."
+                        : space.description
+                  }}
+                  <span
+                    v-if="
+                      space.description &&
+                      space.description.length > maxLength &&
+                      !space.showFullDescription
+                    "
+                    class="read-more-link"
+                    @click="toggleDescription(space)"
+                    >Читати далі</span
+                  >
+                  <span
+                    v-else-if="space.showFullDescription"
+                    class="read-more-link"
+                    @click="toggleDescription(space)"
+                    >Згорнути</span
+                  >
+                </p>
+                <p class="space-price" v-if="space.first_price">
+                  Ціна за 1 год <span>{{ space.first_price }}</span> грн
+                </p>
+                <p class="space-price" v-else>Ціна не вказана</p>
+                <div class="box-book-button">
+                  <v-btn
+                    class="book-button"
+                    @click="openBookModal"
+                    v-if="item.coworking_name == 'EduHUB'"
+                    >Забронювати</v-btn
+                  >
+                  <v-btn
+                    class="book-button"
+                    v-else
+                    @click="openBookSpace(space.id, space.first_price)"
+                    >Забронювати</v-btn
+                  >
+                  <ModalComponents @closeModal="closeModal" />
+                </div>
               </div>
             </div>
           </v-col>
@@ -314,42 +390,38 @@
 import { ref, onMounted } from "vue";
 import ModalComponents from "~/components/modal/ModalComponents.vue";
 import { useRoute } from "vue-router";
+import { useStore } from "vuex";
 
 const { $api } = useNuxtApp();
 
-const isHovered = ref(false);
 const item = ref({});
 const route = useRoute();
+const router = useRouter();
 const bus = useNuxtApp().$bus;
+const baseURL = $api.defaults.baseURL;
+const store = useStore();
 
 const coworkingId = route.params.id;
 
+const maxLength = 30;
+
+const authUser = () => {
+  return store.state.authUser;
+};
 onMounted(async () => {
   try {
     const response = await $api.get(`/coworkings?id=${coworkingId}`);
-    item.value = response.data;
+    const coworking = response.data;
+    if (!coworking.published) {
+      await router.push("/error");
+      return;
+    }
+    item.value = coworking;
+    item.value.social = JSON.parse(item.value.social);
   } catch (error) {
     console.error("Error fetching data:", error);
   }
 });
-
-const selectedAdvantages = (advantages) => {
-  if (advantages) {
-    return advantages.filter((advantage) => advantage.selected);
-  } else {
-    return [];
-  }
-};
-
-const selectedSeatingArrangement = (seatingArrangements) => {
-  if (seatingArrangements) {
-    return seatingArrangements.filter(
-      (seatingArrangement) => seatingArrangement.selected,
-    );
-  } else {
-    return [];
-  }
-};
 
 const openBookModal = () => {
   document.body.style.position = "fixed";
@@ -359,9 +431,20 @@ const openBookModal = () => {
   });
 };
 
+const openBookSpace = (id, price) => {
+  //   document.body.style.position = "fixed";
+  store.state.currentBookSpace.id = id;
+  store.state.currentBookSpace.price = price;
+  bus.$emit("Modal", {
+    showBookSpace: true,
+    openModal: true,
+  });
+};
 const closeModal = () => {
   document.body.style.position = "";
 };
+
+const isMenuOpen = computed(() => store.state.isMenuOpen);
 
 const formatSeats = (count) => {
   if ((count % 100 >= 11 && count % 100 <= 19) || count % 10 === 0) {
@@ -374,14 +457,28 @@ const formatSeats = (count) => {
     return `${count} місць`;
   }
 };
+
+const toggleDescription = (space) => {
+  space.showFullDescription = !space.showFullDescription;
+};
+
+const toggleFavorite = (space) => {
+  space.isFavorite = !space.isFavorite;
+};
 </script>
 
 <style scoped>
-@import "./../../assets/css/style.css";
+@import "~/assets/src/styles.css";
+
+.blurred {
+  filter: blur(5px);
+  pointer-events: none;
+}
 
 .modal-registration-wrapper {
   background-color: rgba(9, 39, 59, 0.2);
 }
+
 .coworking-page {
   background-color: var(--space-bg-mob);
   font-family: "Inter", sans-serif;
@@ -391,6 +488,7 @@ const formatSeats = (count) => {
   max-width: 500px;
   margin: 0 auto;
 }
+
 .main {
   background-color: var(--header-bg);
 }
@@ -515,6 +613,7 @@ const formatSeats = (count) => {
   padding: 10px;
   margin-right: 26px;
 }
+
 .title-seats {
   font-size: 24px;
   font-weight: 700;
@@ -556,6 +655,7 @@ const formatSeats = (count) => {
 .spaces.block {
   padding: 40px 16px;
 }
+
 .spaces .card {
   width: 98%;
   max-width: 432px;
@@ -570,7 +670,6 @@ const formatSeats = (count) => {
 }
 
 .spaces .space-info {
-  height: 72px;
   padding: 16px 24px 32px;
 }
 
@@ -580,6 +679,7 @@ const formatSeats = (count) => {
   overflow: hidden;
   border-radius: 20px;
 }
+
 .spaces .photo img {
   width: 100%;
   height: 100%;
@@ -591,6 +691,7 @@ const formatSeats = (count) => {
   font-size: 24px;
   font-weight: 700;
   text-align: center;
+  margin-bottom: 16px;
 }
 
 .book-button {
@@ -604,14 +705,11 @@ const formatSeats = (count) => {
   font-weight: 400;
   height: 38px;
   border-radius: 4px;
-  position: absolute;
-  left: 50%;
-  transform: translate(-50%, -50%);
 }
 
 .box-book-button {
   display: flex;
-  justify-content: center;
+  justify-content: flex-end;
 }
 
 .places {
@@ -624,18 +722,90 @@ const formatSeats = (count) => {
   background: rgba(255, 255, 255, 0.7);
   -webkit-backdrop-filter: blur(5px);
   backdrop-filter: blur(5px);
-  width: 109px;
+  width: max-content;
   height: 30px;
   font-size: 18px;
   font-style: normal;
   font-weight: 400;
 }
 
+.favorite .v-btn {
+  position: absolute;
+  left: 0px;
+  top: 20px;
+  width: 30px;
+  cursor: pointer;
+  border-color: transparent;
+  border-radius: 0px 20px 20px 0px;
+  background: rgba(255, 255, 255, 0.7);
+  -webkit-backdrop-filter: blur(5px);
+  backdrop-filter: blur(5px);
+}
+
+.favorite .v-btn:hover .v-icon {
+  color: #af3800;
+  transform: scale(1.1);
+}
+
 .spaces-col {
   margin-bottom: 32px;
 }
 
+.space-description {
+  min-height: 20px;
+  transition: all 0.5 ease;
+}
+
+.read-more-link {
+  color: var(--btn-border);
+  cursor: pointer;
+}
+
+.expanded {
+  max-height: none;
+}
+
+.space-price {
+  margin-top: 16px;
+  margin-bottom: 16px;
+  color: var(--header-bg);
+  font-size: 20px;
+  font-weight: 600;
+  text-align: end;
+}
+
+.space-price span {
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.animate-slide-from-header {
+  animation: slideFromHeader 0.6s ease-in-out;
+}
+
+@keyframes slideFromHeader {
+  0% {
+    transform: translateY(-120px);
+    opacity: 0;
+  }
+
+  50% {
+    transform: translateY(-60px);
+    opacity: 0;
+  }
+
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
 @media (min-width: 768px) {
+  .blurred {
+    filter: none;
+    pointer-events: auto;
+  }
+
   .coworking-wrapper {
     max-width: 1440px;
     margin: 0 auto;
@@ -721,9 +891,10 @@ const formatSeats = (count) => {
     width: 36%;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: space-around;
     color: var(--white-color);
     position: relative;
+    margin-top: 70px;
   }
 
   .big {
@@ -735,13 +906,8 @@ const formatSeats = (count) => {
   }
 
   .social {
-    position: absolute;
-    display: flex;
-    flex-direction: column;
-    right: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    gap: 26px;
+    gap: 40px;
+    max-width: 300px;
   }
 
   .time img,
@@ -762,7 +928,7 @@ const formatSeats = (count) => {
   .contacts-box {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 20px;
   }
 
   .weekday,
@@ -788,7 +954,7 @@ const formatSeats = (count) => {
   }
 
   .contacts-box .social img {
-    width: 40px;
+    width: 36px;
   }
 
   .contacts-box .social img:hover {
@@ -847,16 +1013,8 @@ const formatSeats = (count) => {
     margin-bottom: 32px;
   }
 
-  .book-button {
-    opacity: 0;
-  }
-
   .book-button:hover {
     background-color: var(--btn-border);
-  }
-
-  .card:hover .book-button {
-    opacity: 1;
   }
 
   .spaces.block {
@@ -898,6 +1056,24 @@ const formatSeats = (count) => {
   @media (min-width: 1440px) {
     .right {
       margin-top: 70px;
+    }
+
+    .social {
+      position: absolute;
+      display: flex;
+      flex-direction: column;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      gap: 26px;
+    }
+
+    .contacts-box .social img {
+      width: 40px;
+    }
+
+    .contacts-box .social img:hover {
+      transform: scale(1.1);
     }
   }
 }

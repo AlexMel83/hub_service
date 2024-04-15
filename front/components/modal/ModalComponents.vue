@@ -5,8 +5,9 @@
         <img src="~/assets/icon_close_modal.png" alt="close" />
       </button>
       <Registration v-if="openRegistration" />
-      <Login v-if="openLogin" :emailprops="emailProps" />
+      <Login v-if="openLogin" :initialEmail="initialEmail" />
       <BookForm v-if="openBook" />
+      <BookSpace v-if="openBookSpace" />
       <p>{{ textModalMessage }}</p>
     </div>
   </div>
@@ -16,27 +17,34 @@
 import Registration from "~/components/modal/Registration.vue";
 import Login from "~/components/modal/Login.vue";
 import BookForm from "~/components/modal/BookForm.vue";
+import BookSpace from "~/components/modal/BookSpace.vue";
 
 import { ref } from "vue";
 var modal = ref(false);
 var openRegistration = ref(false);
 var openLogin = ref(false);
 var openBook = ref(false);
+var openBookSpace = ref(false);
 let textModalMessage = ref("");
-let emailProps = ref("");
 const bus = useNuxtApp().$bus;
 bus.$on("Modal", (data) => {
   modal.value = data.openModal;
   openRegistration.value = data.showRegistration;
   openLogin.value = data.showLogin;
   openBook.value = data.showBook;
+  openBookSpace.value = data.showBookSpace;
   textModalMessage.value = data.textModalMessage;
-  emailProps.value = data.emailProps;
 });
 </script>
 <script>
 export default {
   components: { Registration, Login, BookForm },
+  props: {
+    initialEmail: {
+      type: String,
+      required: true,
+    },
+  },
   methods: {
     closeModal() {
       this.$emit("closeModal");
@@ -63,6 +71,7 @@ export default {
 }
 
 .registration {
+  min-width: 300px;
   position: absolute;
   left: 50%;
   top: 50%;

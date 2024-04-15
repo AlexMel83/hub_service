@@ -1,7 +1,8 @@
 import axios from "axios";
+import { useStore } from "vuex";
 
-// const baseURL = "https://hub-api.intita.com";
-const baseURL = "http://localhost:4041";
+const baseURL = "https://hub-api.intita.com";
+// const baseURL = "http://localhost:4041";
 
 let api, tokenAxios;
 
@@ -11,15 +12,18 @@ export const initialDataToken = async () => {
 };
 
 export const refreshToken = async () => {
+  const store = useStore();
   await api
     .get("/refresh")
     .then((response) => {
       localStorage.setItem("access_token", response.data.accessToken);
-      localStorage.setItem("refreshToken", response.data.refreshToken);
     })
     .catch((error) => {
-      console.error("Ошибка", error);
-      return refreshToken();
+      console.error(error);
+      store.commit("logOut");
+      if (api.isCancel(error)) {
+        throw error;
+      }
     });
 };
 
@@ -33,9 +37,13 @@ export default defineNuxtPlugin(() => {
   api.defaults.withCredentials = true;
 
   api.interceptors.request.use(async (config) => {
-    if (tokenAxios) {
+    initialDataToken();
+    if (tokenAxios && localStorage.getItem("access_token")) {
       config.headers.Authorization = `Bearer ${tokenAxios}`;
+    } else {
+      config.headers.Authorization = "";
     }
+
     return config;
   });
 

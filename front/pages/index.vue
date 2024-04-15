@@ -1,9 +1,26 @@
 <template>
-  <section class="coworkings-list">
+  <section class="search">
+    <v-row class="mb-4 search-wrapper">
+      <v-col cols="12">
+        <v-text-field
+          v-model="searchTerm"
+          label="Пошук по назві коворкінга"
+          outlined
+          dense
+          bg-color="white"
+          prepend-inner-icon="mdi-magnify"
+          class="custom-search-input"
+          variant="solo"
+          clearable
+        ></v-text-field>
+      </v-col>
+    </v-row>
+  </section>
+  <section class="coworkings-list" :class="{ blurred: isMenuOpen }">
     <div class="spaces-wrapper">
       <v-row>
         <v-col
-          v-for="space in spacesDataApi"
+          v-for="space in filteredSpaces"
           :key="space.id"
           cols="12"
           sm="6"
@@ -15,11 +32,10 @@
           <nuxt-link class="container" :to="'/coworking/' + space.id">
             <div class="photo">
               <img
-                :key="space.id"
-                v-if="space.coworking_photo.includes(`../..`)"
-                :src="`${space.coworking_photo}`"
+                v-if="space.coworking_photo"
+                :src="`${baseURL}/${space.coworking_photo}`"
               />
-              <img v-else src="../assets/spaces_images/main-photo.jpg" />
+              <img v-else src="./../public/default-coworking.png" />
               <div class="rating">
                 <v-rating
                   readonly
@@ -40,37 +56,47 @@
             <div class="info-card">
               <div class="icons-container down">
                 <img
-                  v-for="advantage in selectedAdvantages(space.advantages)"
+                  v-for="(advantage, index) in space.advantages.slice(0, 7)"
                   :key="advantage.name"
-                  :src="advantage.icon"
+                  :title="advantage.description"
+                  :src="`${baseURL}/${advantage.icon}`"
                 />
+                <v-icon
+                  v-if="space.advantages.length > 7"
+                  color="var(--header-bg)"
+                  class="dots-icon"
+                  >mdi-dots-horizontal</v-icon
+                >
               </div>
-              <div class="map">
-                <a href="">
+              <div class="map" @click.stop v-if="space.address">
+                <a
+                  :href="
+                    'https://maps.google.com/?q=' +
+                    encodeURIComponent(space.address)
+                  "
+                  target="_blank"
+                >
                   <img
-                    src="./../assets/spaces_images/location-marker.png"
+                    src="~assets/spaces_images/location-marker.png"
                     alt="local"
                   />
+                  <span>{{ space.address }}</span>
                 </a>
-                <a>{{ space.address }}</a>
               </div>
               <div class="icons-container up">
-                <div class="time">
-                  <img
-                    src="./../assets/spaces_images/time.svg"
-                    alt="time icon"
-                  />
+                <div
+                  class="time"
+                  v-if="space.workday_start && space.workday_end"
+                >
+                  <img src="~assets/spaces_images/time.svg" alt="time icon" />
 
                   {{ space.workday_start }} - {{ space.workday_end }}
                 </div>
-                <div class="money">
-                  <img
-                    src="./../assets/spaces_images/money.svg"
-                    alt="money icon"
-                  />
+                <!-- <div class="money">
+                  <img src="~assets/spaces_images/money.svg" alt="money icon" />
 
                   {{ space.first_price }} грн / {{ space.last_price }} грн
-                </div>
+                </div> -->
               </div>
               <nuxt-link
                 :to="'/coworking/' + space.id"
@@ -83,44 +109,109 @@
           </nuxt-link>
         </v-col>
       </v-row>
+      <v-pagination
+        v-model="page"
+        :length="Math.ceil(spacesDataApi.length / perPage)"
+        rounded="0"
+        color="#1A679A"
+        class="custom-pagination"
+      ></v-pagination>
     </div>
   </section>
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, computed, onMounted, watch } from "vue";
 import { useStore } from "vuex";
 
 const { $api } = useNuxtApp();
 const isHovered = ref(false);
 const spacesDataApi = ref([]);
 const store = useStore();
-
-const selectedAdvantages = (advantages) => {
-  return advantages ? advantages.filter((advantage) => advantage.selected) : [];
-};
+const baseURL = $api.defaults.baseURL;
+const searchTerm = ref("");
+const page = ref(1);
+const perPage = 12;
 
 onMounted(async () => {
+  await fetchCoworkings();
+  await getAllAdvantages();
+});
+
+watch(searchTerm, async (newValue) => {
+  await fetchCoworkings(newValue);
+});
+
+const fetchCoworkings = async (searchQuery = null) => {
   try {
-    const response = await $api.get("/coworkings");
-    spacesDataApi.value = response.data;
+    let url = "/coworkings";
+    if (searchQuery) {
+      url += `?name=${searchQuery}`;
+    }
+    const response = await $api.get(url);
+    spacesDataApi.value = response.data.filter(
+      (space) => space.published === true,
+    );
+    // spacesDataApi.value = response.data;
   } catch (error) {
-    console.error("Error fetching data:", error);
+    console.error("Error fetching coworkings data:", error);
   }
+};
+
+const filteredSpaces = computed(() => {
+  const lowerCaseSearchTerm = searchTerm.value
+    ? searchTerm.value.toLowerCase()
+    : "";
+  const startIndex = (page.value - 1) * perPage;
+  const endIndex = startIndex + perPage;
+  return spacesDataApi.value
+    .filter((space) =>
+      space.coworking_name.toLowerCase().includes(lowerCaseSearchTerm),
+    )
+    .slice(startIndex, endIndex);
 });
 
 const roleManager = computed(() => store.state.roleManager);
+
+const isMenuOpen = computed(() => store.state.isMenuOpen);
+
+const getAllAdvantages = async () => {
+  try {
+    const response = await $api.get("/advantages");
+    store.commit("setAllAdvantages", response.data);
+  } catch (error) {
+    console.error("An error occurred while fetching advantages:", error);
+  }
+};
 </script>
 
 <style scoped>
-@import "./../assets/css/style.css";
+@import "../assets/src/styles.css";
+
+.blurred {
+  filter: blur(5px);
+  pointer-events: none;
+}
+
+.search {
+  background-color: var(--header-bg);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .coworkings-list {
   background-color: var(--space-bg-mob);
 }
+
 .spaces-wrapper {
   margin: 0 auto;
   min-height: 100vh;
-  padding: 24px 0;
+  padding: 24px 0px;
+}
+
+.search-wrapper {
+  padding: 0 16px;
 }
 
 .container {
@@ -223,6 +314,7 @@ const roleManager = computed(() => store.state.roleManager);
   backdrop-filter: blur(25px);
   margin-bottom: 16px;
   padding: 4px 0;
+  min-height: 32px;
 }
 
 .icons-container.down img {
@@ -236,6 +328,17 @@ const roleManager = computed(() => store.state.roleManager);
 .map {
   display: flex;
   margin-bottom: 10px;
+}
+
+.map img {
+  width: 25px;
+  height: 25px;
+}
+
+.map a {
+  display: flex;
+  align-items: center;
+  column-gap: 7px;
 }
 
 .info-item {
@@ -263,9 +366,9 @@ const roleManager = computed(() => store.state.roleManager);
   padding: 6px 14px;
   justify-content: center;
   align-items: center;
-  margin-top: 10px;
   border: 2px solid transparent;
   position: absolute;
+  bottom: -20px;
   left: 50%;
   transform: translate(-50%, 0%);
 }
@@ -275,18 +378,44 @@ const roleManager = computed(() => store.state.roleManager);
   background-color: var(--header-bg);
 }
 
-.v-btn {
-  letter-spacing: normal;
-}
-
 a {
   text-decoration: none;
   color: var(--text-color);
 }
 
+.custom-search-input {
+  margin-top: 40px;
+}
+
+.icons-container .down {
+  position: relative;
+}
+
+.dots-icon::before {
+  position: absolute;
+  bottom: -30%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+@media (min-width: 768px) {
+  .blurred {
+    filter: none;
+    pointer-events: auto;
+  }
+}
+
 @media (min-width: 1024px) {
   .spaces-wrapper {
     padding: 40px;
+  }
+
+  .search {
+    padding: 0 40px;
+  }
+
+  .search-wrapper {
+    padding: 0 8px;
   }
 
   .spaces-col {
@@ -321,6 +450,7 @@ a {
 
   .info-card {
     padding: 24px 24px 32px;
+    min-height: 174px;
   }
 
   .icons-container.down img {
@@ -333,6 +463,10 @@ a {
 @media (min-width: 1440px) {
   .spaces-wrapper {
     padding: 40px 65px;
+  }
+
+  .search {
+    padding: 0 65px;
   }
 }
 </style>

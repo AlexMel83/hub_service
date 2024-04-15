@@ -70,7 +70,16 @@
   </div>
 </template>
 
-<script></script>
+<script>
+export default {
+  name: "Footer",
+  components: {},
+  data() {
+    return {};
+  },
+  methods: {},
+};
+</script>
 <style scoped>
 .footer-wrapper {
   background-color: var(--footer-bg);

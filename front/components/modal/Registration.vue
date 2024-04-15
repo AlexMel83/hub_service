@@ -3,23 +3,28 @@
     <h1>Зареєструватися</h1>
     <div class="user-selection">
       <div>
-        <input
-          @click="showRegUser"
-          type="radio"
-          id="user"
-          checked="true"
-          name="fav_language"
-        />
-        <label for="user">Користувач</label><br />
+        <label :class="{ selected: userRole === 'user' }">
+          <input
+            @click="showRegUser"
+            type="radio"
+            value="user"
+            v-model="userRole"
+            name="fav_language"
+          />
+          Користувач</label
+        ><br />
       </div>
       <div>
-        <input
-          @click="showRegUser"
-          type="radio"
-          id="space"
-          name="fav_language"
-        />
-        <label for="space">Менеджер</label><br />
+        <label :class="{ selected: userRole === 'manager' }">
+          <input
+            @click="showRegUser"
+            type="radio"
+            value="manager"
+            v-model="userRole"
+            name="fav_language"
+          />
+          Менеджер</label
+        ><br />
       </div>
     </div>
     <div v-if="showRegistrationUser" class="user-registration">
@@ -110,17 +115,12 @@
       </div>
     </div>
     <div v-else class="space-registration">
-      <div class="input-wrapper">
-        <input
-          :class="{ 'input-error': errors.coworkingNameValidation }"
-          name="spaceName"
-          type="text"
-          placeholder="Назва коворкінгу*"
-          maxlength="30"
-          v-bind="coworkingNameValidation"
-        />
-        <div class="error-text">
-          {{ errors.coworkingNameValidation }}
+      <div class="login-using">
+        <div class="login-using-item">
+          <img src="~assets/icon_google.png" alt="google" />
+        </div>
+        <div class="login-using-item">
+          <img src="~assets/icon_facebook.png" alt="facebook" />
         </div>
       </div>
       <div class="input-wrapper">
@@ -131,9 +131,11 @@
           type="email"
           maxlength="30"
           v-bind="emailValidation"
+          @input="emailError = ''"
         />
         <div class="error-text">
           {{ errors.emailValidation }}
+          {{ emailError }}
         </div>
       </div>
 
@@ -203,8 +205,8 @@
       </div>
     </div>
     <RegLoginButton textContent="Зареєструватися" />
+    <button class="link-btn" @click="openLogin">Увійти</button>
   </form>
-  <button class="link-btn" @click="openLogin">Увійти</button>
 </template>
 
 <script setup>
@@ -216,9 +218,6 @@ const bus = useNuxtApp().$bus;
 
 const { defineInputBinds, errors, handleSubmit } = useForm({
   validationSchema: yup.object({
-    coworkingNameValidation: yup.string(),
-    //   .required("Це поле є обов’язковим для заповнення")
-    //   .min(2, "Назва повинна містити принаймні 2 символа"),
     emailValidation: yup
       .string()
       .email("поле заповнено некоректно")
@@ -230,7 +229,7 @@ const { defineInputBinds, errors, handleSubmit } = useForm({
     passwordValidation: yup
       .string()
       .required("Це поле є обов’язковим для заповнення")
-      .min(2, "Пароль повинен містити принаймні 2 символа"),
+      .min(4, "Пароль повинен містити принаймні 4 символа"),
     confirmPasswordValidation: yup
       .string()
       .required("Це поле є обов’язковим для заповнення")
@@ -240,7 +239,6 @@ const { defineInputBinds, errors, handleSubmit } = useForm({
       ),
   }),
 });
-const coworkingNameValidation = defineInputBinds("coworkingNameValidation");
 const emailValidation = defineInputBinds("emailValidation");
 const passwordValidation = defineInputBinds("passwordValidation");
 const confirmPasswordValidation = defineInputBinds("confirmPasswordValidation");
@@ -290,13 +288,16 @@ function showRegUser() {
     : (userRole.value = "manager");
 }
 
-import { defineEmits } from "vue";
-const { emit } = defineEmits();
-
 const passwordError = ref("");
+</script>
 
-const openLogin = () => {
-  emit("openLoginComponent");
+<script>
+export default {
+  methods: {
+    openLogin() {
+      this.$emit("openLoginComponent");
+    },
+  },
 };
 </script>
 
@@ -353,7 +354,8 @@ const openLogin = () => {
   align-items: center;
 }
 
-.user-registration .login-using {
+.user-registration .login-using,
+.space-registration .login-using {
   width: 166px;
   height: 60px;
   display: flex;
@@ -363,7 +365,8 @@ const openLogin = () => {
   margin-top: -2px;
 }
 
-.user-registration .login-using .login-using-item {
+.user-registration .login-using .login-using-item,
+.space-registration .login-using .login-using-item {
   height: 100%;
   width: 60px;
   border: 1px solid #a9a9a9;
@@ -465,7 +468,7 @@ label:after {
   content: "";
   position: absolute;
   left: 5px;
-  top: 4.5px;
+  top: 0px;
   width: 24px;
   height: 24px;
   border-radius: 50%;
@@ -475,13 +478,14 @@ label:after {
   vertical-align: middle;
 }
 
-input[type="radio"]:checked + label:after {
+.selected::after {
   opacity: 1;
 }
 
 .link-btn {
   margin: 24px 0 32px 0;
   font-size: 18px;
+  border-radius: 10px;
 }
 
 @media (min-width: 375px) {
@@ -518,6 +522,7 @@ input[type="radio"]:checked + label:after {
 
   label:after {
     left: 4px;
+    top: 4px;
     width: 16px;
     height: 16px;
     background-color: var(--text-color);
