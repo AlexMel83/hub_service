@@ -1,0 +1,36 @@
+version: "3.8"
+
+services:
+  api:
+    container_name: eduhub_api
+    build: .
+    env_file:
+      - .env
+    volumes:
+      - .:/app/
+      - /app/node_modules
+    ports:
+      - ${PORT}:4040
+    command: sh -c "npm run db:setup && npm run start"
+    depends_on:
+      - postgres
+    restart: always
+
+  postgres:
+    container_name: eduhub_bd
+    image: postgres:16-alpine
+    env_file:
+      - .env
+    expose:
+      - ${POSTGRES_PORT}
+    ports:
+      - ${POSTGRES_PORT}:5432
+    environment:
+      PG_DATA: /var/lib/postgresql/data
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+      # - ./sql/pg_coworking_demo.sql:/docker-entrypoint-initdb.d/pg_coworking_demo.sql
+    restart: always
+
+volumes:
+  pgdata:
