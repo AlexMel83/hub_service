@@ -97,8 +97,6 @@ const spacesData = [
     space_name: "Коворкінг-зона 1",
     description:
       "Lorem ipsum dolor sit amet consectetur adipisicing elit. Unde et, odit architecto reprehenderit id officia debitis eum distinctio, quisquam voluptatibus dolore. Iste molestias, natus nam sed ullam quae ad soluta.",
-    description:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Unde et, odit architecto reprehenderit id officia debitis eum distinctio, quisquam voluptatibus dolore. Iste molestias, natus nam sed ullam quae ad soluta.",
     space_photo: "./uploads/public/cow-1-space-3.jpg",
     amount: 50,
     first_price: 50,

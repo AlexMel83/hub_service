@@ -249,7 +249,6 @@ export default {
 };
 </script>
 
-
 <style>
 .wrapper-manager-page {
   display: flex;

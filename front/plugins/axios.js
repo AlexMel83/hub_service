@@ -23,7 +23,7 @@ export const refreshToken = async () => {
     });
 };
 
-export default defineNuxtPlugin((nuxtApp) => {
+export default defineNuxtPlugin(() => {
   api = axios.create({
     baseURL,
     headers: {
@@ -50,7 +50,7 @@ export default defineNuxtPlugin((nuxtApp) => {
         return api(originalRequest);
       }
       return Promise.reject(error);
-    }
+    },
   );
 
   return {

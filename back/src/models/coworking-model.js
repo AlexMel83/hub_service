@@ -230,11 +230,43 @@ module.exports = {
       advantages = [];
 
     const trx = await knex.transaction();
-    try {
-      const coworkingId = await trx(COWORKINGS_TABLE)
-        .insert(coworkingData)
-        .returning("id");
 
+    const coworkingId = await trx(COWORKINGS_TABLE)
+      .insert(coworkingData)
+      .returning("id");
+
+    async function insertPrices(data) {
+      try {
+        pricesData = await trx(PRICES_TABLE)
+          .insert({
+            ...data,
+            coworking_id: coworkingId[0].id,
+          })
+          .returning(pricesFields);
+
+        return pricesData;
+      } catch (error) {
+        console.error(error);
+        throw error;
+      }
+    }
+
+    async function insertWorktimes(data) {
+      try {
+        worktimesData = await trx(WORKTIME_TABLE)
+          .insert({
+            ...data,
+            coworking_id: coworkingId[0].id,
+          })
+          .returning(worktimeFields);
+        return worktimesData;
+      } catch (error) {
+        console.error(error);
+        throw error;
+      }
+    }
+
+    try {
       if (fields.advantages) {
         const advantagesIdsArray = parseAdvantageIds(fields.advantages);
         const invalidIds = advantagesIdsArray.filter((id) => isNaN(id));
@@ -247,37 +279,6 @@ module.exports = {
           coworkingId[0].id,
           trx,
         );
-      }
-
-      async function insertPrices(data) {
-        try {
-          pricesData = await trx(PRICES_TABLE)
-            .insert({
-              ...data,
-              coworking_id: coworkingId[0].id,
-            })
-            .returning(pricesFields);
-
-          return pricesData;
-        } catch (error) {
-          console.error(error);
-          throw error;
-        }
-      }
-
-      async function insertWorktimes(data) {
-        try {
-          worktimesData = await trx(WORKTIME_TABLE)
-            .insert({
-              ...data,
-              coworking_id: coworkingId[0].id,
-            })
-            .returning(worktimeFields);
-          return worktimesData;
-        } catch (error) {
-          console.error(error);
-          throw error;
-        }
       }
 
       pricesData = await insertPrices({

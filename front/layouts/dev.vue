@@ -1,14 +1,10 @@
 <template>
   <div class="other-page">
-
     <NuxtPage></NuxtPage>
-
   </div>
 </template>
 
-<script>
-
-</script>
+<script></script>
 <style>
 .other-page {
   margin: 0 auto;

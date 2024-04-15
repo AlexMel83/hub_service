@@ -42,7 +42,7 @@
         <div
           class="icons-container-places"
           v-for="seatingArrangement in selectedseatingArrangement(
-            item.seatingArrangements
+            item.seatingArrangements,
           )"
           :key="seatingArrangement.name"
         >
@@ -164,9 +164,12 @@
         </div>
         <img class="space-img" :src="space.photo" :alt="space.name" />
         <div class="box-space-button">
-          <v-btn class="book-button" 
-          @click="openBookModal"
-          v-if="item.name == 'EduHUB'" >Забронювати</v-btn>
+          <v-btn
+            class="book-button"
+            @click="openBookModal"
+            v-if="item.name == 'EduHUB'"
+            >Забронювати</v-btn
+          >
         </div>
       </div>
     </div>
@@ -223,7 +226,7 @@ export default {
     selectedseatingArrangement(seatingArrangements) {
       if (seatingArrangements) {
         return seatingArrangements.filter(
-          (seatingArrangement) => seatingArrangement.selected
+          (seatingArrangement) => seatingArrangement.selected,
         );
       } else {
         return [];
@@ -388,15 +391,15 @@ section {
   padding: 0px 0px 20px 0px;
 }
 
-.star-rating{
+.star-rating {
   display: flex;
   justify-content: center;
 }
 
-.photo-dekstop{
+.photo-dekstop {
   width: 350px;
   margin: 0 0 0 13px;
-  border: 1px solid #FFF;
+  border: 1px solid #fff;
 }
 
 .telephone-img-coworcing-mobile-off {
@@ -408,87 +411,87 @@ section {
   font-size: 5.3vw;
   font-weight: 400;
   line-height: normal;
-  }
+}
 
-  .telephone-emil-desktop a {
-    text-decoration: none;
-    color: var(--black-color);
-    display: flex;
-    align-items: center;
-  }
+.telephone-emil-desktop a {
+  text-decoration: none;
+  color: var(--black-color);
+  display: flex;
+  align-items: center;
+}
 
-  .telephone-emil-desktop img{
-    margin-right: 7px;
-    height: 26px;
-  }
+.telephone-emil-desktop img {
+  margin-right: 7px;
+  height: 26px;
+}
 
-  .social-icon{
-    display: flex;
-    justify-content: space-evenly;
-    align-items: center;
-    padding: 20px 0px 0 0px;
-  }
+.social-icon {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  padding: 20px 0px 0 0px;
+}
 
-  .desktop-clock{
-    display: flex;
-  }
+.desktop-clock {
+  display: flex;
+}
 
-  .space-img{
-    height: 40vw;
-  }
+.space-img {
+  height: 40vw;
+}
 
-  .spaces-desktop{
-    display: flex;
-    flex-direction: column;
-    padding: 0 10px 15px 10px;
-  }
+.spaces-desktop {
+  display: flex;
+  flex-direction: column;
+  padding: 0 10px 15px 10px;
+}
 
-  .box-space-button{
-    display: flex;
-    justify-content: flex-end;
-    padding: 10px 0px 0px 0px;
-  }
+.box-space-button {
+  display: flex;
+  justify-content: flex-end;
+  padding: 10px 0px 0px 0px;
+}
 
-  .about-space-mobile{
-    display: flex;
-    flex-direction: column;
-    gap: 25px;
-    padding: 20px 0 20px 0;
-  }
+.about-space-mobile {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  padding: 20px 0 20px 0;
+}
 
-  .mobile-people-people{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    padding: 0 0 0 25px;
-    gap: 20px;
-  }
+.mobile-people-people {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 0 0 0 25px;
+  gap: 20px;
+}
 
-  .mobile-clock{
-    display: flex;
-    align-items: center;
-    padding: 0 0 0 25px;
-    gap: 19px;
-  }
+.mobile-clock {
+  display: flex;
+  align-items: center;
+  padding: 0 0 0 25px;
+  gap: 19px;
+}
 
-  .box-days{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
+.box-days {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 
-  .currency-dollar-mobile{
-    display: flex;
-    flex-direction: row;
-    padding: 0 0 0 25px;
-    gap: 25px;
-  }
+.currency-dollar-mobile {
+  display: flex;
+  flex-direction: row;
+  padding: 0 0 0 25px;
+  gap: 25px;
+}
 
-  .box-price{
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-  }
+.box-price {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
 
 @media (min-width: 768px) {
   .desktop {
@@ -631,8 +634,6 @@ section {
   .coworking-text-title {
     height: 50%;
     padding: 0 0 0px 40px;
-    
-
   }
 
   .free-services {
@@ -682,38 +683,37 @@ section {
     justify-content: flex-end;
     padding: 10px 0px 0px 0px;
   }
-  .social-icon{
+  .social-icon {
     display: flex;
     justify-content: center;
     gap: 30px;
     align-items: center;
   }
 
-  .photo-dekstop{
-  height: 50%;
-  margin: 0;
-  border: none;
-}
+  .photo-dekstop {
+    height: 50%;
+    margin: 0;
+    border: none;
+  }
 
-.spaces-desktop{
+  .spaces-desktop {
     height: 380px;
   }
 
-  .space-img{
+  .space-img {
     height: 90%;
   }
 
   .coworking-text {
-    padding: 0px 0px 25px 40px 
+    padding: 0px 0px 25px 40px;
   }
 
   .book-button {
     width: 200px;
   }
 
-  .about-space-mobile{
+  .about-space-mobile {
     display: none;
   }
-
 }
 </style>

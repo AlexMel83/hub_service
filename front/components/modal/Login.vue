@@ -67,7 +67,7 @@
       <span>Забули свій пароль?</span>
     </div>
     <RegLoginButton textContent="Увійти" />
-  </Form>
+  </form>
   <button class="link-btn" @click="openReg">Зареєструватися</button>
 </template>
 <script setup>
@@ -88,7 +88,7 @@ const { defineInputBinds, errors, handleSubmit } = useForm({
       .required("Це поле є обов’язковим для заповнення")
       .matches(
         /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,})+$/,
-        "Поле заповнено невірно"
+        "Поле заповнено невірно",
       ),
     passwordValidation: yup
       .string()
@@ -152,8 +152,8 @@ export default {
   },
 };
 </script>
-  
-  <style scoped>
+
+<style scoped>
 .error-text {
   color: red;
   font-size: 12px;

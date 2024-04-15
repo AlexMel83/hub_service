@@ -203,7 +203,7 @@
       </div>
     </div>
     <RegLoginButton textContent="Зареєструватися" />
-  </Form>
+  </form>
   <button class="link-btn" @click="openLogin">Увійти</button>
 </template>
 
@@ -225,7 +225,7 @@ const { defineInputBinds, errors, handleSubmit } = useForm({
       .required("Це поле є обов’язковим для заповнення")
       .matches(
         /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,})+$/,
-        "Поле заповнено невірно"
+        "Поле заповнено невірно",
       ),
     passwordValidation: yup
       .string()
@@ -236,7 +236,7 @@ const { defineInputBinds, errors, handleSubmit } = useForm({
       .required("Це поле є обов’язковим для заповнення")
       .oneOf(
         [yup.ref("passwordValidation"), null],
-        "Паролі повинні співпадати"
+        "Паролі повинні співпадати",
       ),
   }),
 });
@@ -290,7 +290,7 @@ function showRegUser() {
     : (userRole.value = "manager");
 }
 
-import { defineEmits } from 'vue';
+import { defineEmits } from "vue";
 const { emit } = defineEmits();
 
 const passwordError = ref("");
@@ -298,10 +298,9 @@ const passwordError = ref("");
 const openLogin = () => {
   emit("openLoginComponent");
 };
-
 </script>
- 
-  <style scoped>
+
+<style scoped>
 .error-text {
   color: red;
   font-size: 12px;
@@ -541,4 +540,3 @@ input[type="radio"]:checked + label:after {
   }
 }
 </style>
-  

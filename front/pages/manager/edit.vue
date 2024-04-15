@@ -153,7 +153,7 @@
   </div>
 </template>
 
-  <script>
+<script>
 import axios from "axios";
 import managerMenu from "~/pages/manager/managerMenu.vue";
 
@@ -260,8 +260,8 @@ export default {
   },
 };
 </script>
-  
-  <style>
+
+<style>
 .edit-coworking {
   position: relative;
 }

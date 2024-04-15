@@ -57,7 +57,7 @@ export default {
           }
 
           return formattedNumber.join("");
-        }
+        },
       );
       this.value = event.target.value;
       this.$emit("givePhone", this.value);

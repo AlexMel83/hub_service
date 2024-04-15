@@ -198,8 +198,6 @@ export default {
 };
 </script>
 
-
-
 <style>
 .indent-mng-bnt {
   text-align: left;

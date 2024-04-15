@@ -8,9 +8,8 @@
     </div>
   </div>
 </template>
-  
-  
-  <script setup>
+
+<script setup>
 import managerMenu from "~/pages/manager/managerMenu.vue";
 </script>
 <style>

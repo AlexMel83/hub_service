@@ -113,14 +113,14 @@ const { defineInputBinds, errors, handleSubmit } = useForm({
       .required("Це поле є обов’язковим для заповнення")
       .matches(
         /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,})+$/,
-        "Поле заповнено невірно"
+        "Поле заповнено невірно",
       ),
     phoneValidation: yup
       .string()
       .required("Це поле є обов’язковим для заповнення")
       .matches(
         /^\+38 \(0[1-9]\d{1}\) \d{3} \d{2} \d{2}$/,
-        "Поле заповнено невірно"
+        "Поле заповнено невірно",
       ),
   }),
 });
@@ -164,9 +164,8 @@ const onSubmit = handleSubmit(async (values) => {
     const newToken = ref(null);
     const recaptcha = async () => {
       await recaptchaInstance?.recaptchaLoaded();
-      newToken.value = await recaptchaInstance?.executeRecaptcha(
-        "yourActionHere"
-      );
+      newToken.value =
+        await recaptchaInstance?.executeRecaptcha("yourActionHere");
       return newToken;
     };
     await recaptcha();
@@ -181,7 +180,7 @@ const onSubmit = handleSubmit(async (values) => {
         { firstDate: firstDate.value, lastDate: lastDate.value },
         { firstTime: firstTime.value, lastTime: lastTime.value },
         { people: people.value },
-      ])
+      ]),
     );
     formData.append("g-recaptcha-response", newToken.value);
     formData.append("organization_id", "1");
@@ -202,7 +201,7 @@ const onSubmit = handleSubmit(async (values) => {
 function onInput(event) {
   event.target.value = event.target.value.replace(
     /[^a-zA-Zа-яА-ЯїЇєЄіІґҐ'-]/g,
-    ""
+    "",
   );
 }
 
@@ -232,7 +231,7 @@ function onInputPhone(event) {
       }
 
       return formattedNumber.join("");
-    }
+    },
   );
   phoneValidation = event.target.value;
 }

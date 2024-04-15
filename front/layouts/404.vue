@@ -16,7 +16,7 @@
 
 p {
   text-align: center;
-  color: var(--1, #09273B);
+  color: var(--1, #09273b);
   text-align: center;
   font-family: Inter;
   font-size: 24px;
@@ -25,7 +25,7 @@ p {
   line-height: normal;
 }
 
-.box-fail{
+.box-fail {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -33,8 +33,8 @@ p {
   padding: 32px 0 32px 0px;
 }
 
-@media (min-width: 768px){
-    .fail-404 {
+@media (min-width: 768px) {
+  .fail-404 {
     width: 90%;
   }
 
@@ -46,7 +46,7 @@ p {
     font-size: 40px;
     line-height: 140%; /* 56px */
   }
-  .text-whoops{
+  .text-whoops {
     position: absolute;
   }
 }

@@ -64,7 +64,10 @@
               </div>
               <div class="time flex">
                 <div>
-                  <img src="./../../assets/spaces_images/clock-white.svg" alt="time" />
+                  <img
+                    src="./../../assets/spaces_images/clock-white.svg"
+                    alt="time"
+                  />
                 </div>
                 <div class="time-info">
                   <p class="weekday">
@@ -147,14 +150,20 @@
       <div class="info block">
         <div class="people flex">
           <div>
-            <img src="./../../assets/spaces_images/people-black.svg" alt="people" />
+            <img
+              src="./../../assets/spaces_images/people-black.svg"
+              alt="people"
+            />
           </div>
           <p>Робочих місць {{ item.amount }}</p>
         </div>
 
         <div class="time flex">
           <div>
-            <img src="./../../assets/spaces_images/clock-black.svg" alt="time" />
+            <img
+              src="./../../assets/spaces_images/clock-black.svg"
+              alt="time"
+            />
           </div>
           <div class="time-info">
             <p class="weekday">
@@ -167,7 +176,10 @@
         </div>
         <div class="price flex">
           <div>
-            <img src="./../../assets/spaces_images/money-black.svg" alt="price" />
+            <img
+              src="./../../assets/spaces_images/money-black.svg"
+              alt="price"
+            />
           </div>
           <div class="price-info">
             <p>Від {{ item.first_price }} грн</p>
@@ -211,7 +223,7 @@
             <div
               class="icon-wrapper"
               v-for="seatingArrangement in selectedseatingArrangement(
-                item.seatingArrangements
+                item.seatingArrangements,
               )"
               :key="seatingArrangement.name"
             >
@@ -332,7 +344,7 @@ const selectedAdvantages = (advantages) => {
 const selectedSeatingArrangement = (seatingArrangements) => {
   if (seatingArrangements) {
     return seatingArrangements.filter(
-      (seatingArrangement) => seatingArrangement.selected
+      (seatingArrangement) => seatingArrangement.selected,
     );
   } else {
     return [];
@@ -670,8 +682,8 @@ const formatSeats = (count) => {
     margin-bottom: 32px;
     text-align: start;
   }
-  
-  .main-box h1{
+
+  .main-box h1 {
     font-size: 40px;
   }
 

@@ -9,7 +9,6 @@
   </div>
 </template>
 
-
 <script setup>
 import managerMenu from "~/pages/manager/managerMenu.vue";
 import coworking from "~/pages/manager/coworking.vue";
@@ -17,9 +16,7 @@ import coworking from "~/pages/manager/coworking.vue";
 definePageMeta({
   layout: "manager",
 });
-
 </script>
-
 
 <style>
 .manager-menu {

@@ -1,7 +1,7 @@
 <template>
   <button type="submit">{{ textContent }}</button>
 </template>
-  <script>
+<script>
 export default {
   data() {
     return {};
@@ -12,9 +12,8 @@ export default {
   },
 };
 </script>
-  
 
-  <style scoped>
+<style scoped>
 button {
   width: 100%;
   height: 46px;
@@ -49,4 +48,3 @@ button {
   }
 }
 </style>
-  

@@ -12,12 +12,13 @@
           xl="4"
           class="spaces-col"
         >
-          <nuxt-link
-            class="container"
-            :to="'/coworking/' + space.id"
-          >
+          <nuxt-link class="container" :to="'/coworking/' + space.id">
             <div class="photo">
-              <img :key="space.id" v-if="space.coworking_photo.includes(`../..`)" :src="`${space.coworking_photo}`" />
+              <img
+                :key="space.id"
+                v-if="space.coworking_photo.includes(`../..`)"
+                :src="`${space.coworking_photo}`"
+              />
               <img v-else src="../assets/spaces_images/main-photo.jpg" />
               <div class="rating">
                 <v-rating
@@ -55,12 +56,18 @@
               </div>
               <div class="icons-container up">
                 <div class="time">
-                  <img src="./../assets/spaces_images/time.svg" alt="time icon" />
+                  <img
+                    src="./../assets/spaces_images/time.svg"
+                    alt="time icon"
+                  />
 
                   {{ space.workday_start }} - {{ space.workday_end }}
                 </div>
                 <div class="money">
-                  <img src="./../assets/spaces_images/money.svg" alt="money icon" />
+                  <img
+                    src="./../assets/spaces_images/money.svg"
+                    alt="money icon"
+                  />
 
                   {{ space.first_price }} грн / {{ space.last_price }} грн
                 </div>
@@ -104,7 +111,6 @@ onMounted(async () => {
 
 const roleManager = computed(() => store.state.roleManager);
 </script>
-
 
 <style scoped>
 @import "./../assets/css/style.css";

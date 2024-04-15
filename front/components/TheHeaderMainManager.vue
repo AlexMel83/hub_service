@@ -21,12 +21,11 @@
 </template>
 
 <script scoped>
-
 export default {
   name: "Header",
   methods: {
     exitLogin() {
-      this.$router.push('/');
+      this.$router.push("/");
     },
   },
 };
