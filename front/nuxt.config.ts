@@ -39,8 +39,7 @@ export default defineNuxtConfig({
       meta: [
         {
           name: "discription",
-          content:
-            "HUB- обирай коворкінг для ефективного навчання та роботи.",
+          content: "HUB- обирай коворкінг для ефективного навчання та роботи.",
         },
         {
           name: "viewport",
