@@ -60,7 +60,7 @@ import {
   LPopup,
   LIcon,
 } from "@vue-leaflet/vue-leaflet";
-import { nextTick, reactive, defineProps, ref, computed, onMounted } from "vue";
+import { nextTick, reactive, ref, computed, onMounted } from "vue";
 import { useNuxtApp } from "#app";
 const { $config, $api } = useNuxtApp();
 const baseURL = $api.defaults.baseURL;

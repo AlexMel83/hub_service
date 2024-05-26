@@ -3,11 +3,7 @@ import vuetify, { transformAssetUrls } from "vite-plugin-vuetify";
 require("dotenv").config();
 
 export default defineNuxtConfig({
-  plugins: [
-    "~/plugins/axios",
-    "~/plugins/vuetify",
-    { src: "~/plugins/leaflet.client.js", mode: "client" },
-  ],
+  plugins: ["~/plugins/axios", "~/plugins/vuetify"],
   devtools: { enabled: true },
   css: [
     "@mdi/font/css/materialdesignicons.min.css",

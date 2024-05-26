@@ -14,7 +14,7 @@
       >
         <l-tile-layer :url="osmUrl" :attribution="osmAttrib"></l-tile-layer>
         <!-- --- Маркери координат цілей --- -->
-        <template v-for="target in targetMarkers" :key="target.id">
+        <div v-for="target in targetMarkers" :key="target.id">
           <l-marker
             v-if="isIconLoaded && target.latLng && defaultIcon && shahedIcon"
             :key="target.id"
@@ -41,7 +41,7 @@
               </div>
             </l-popup>
           </l-marker>
-        </template>
+        </div>
         <!-- --- Маркери коворкінгів --- -->
         <l-marker
           v-for="coworking in markerData"

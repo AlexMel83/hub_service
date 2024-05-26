@@ -1,124 +1,126 @@
 <template>
-  <section class="search">
-    <v-row class="mb-4 search-wrapper">
-      <v-col cols="12">
-        <v-text-field
-          v-model="searchTerm"
-          label="Пошук по назві коворкінга"
-          outlined
-          dense
-          bg-color="white"
-          prepend-inner-icon="mdi-magnify"
-          class="custom-search-input"
-          variant="solo"
-          clearable
-        ></v-text-field>
-      </v-col>
-    </v-row>
-  </section>
-  <section class="coworkings-list" :class="{ blurred: isMenuOpen }">
-    <div class="spaces-wrapper">
-      <v-row>
-        <v-col
-          v-for="space in filteredSpaces"
-          :key="space.id"
-          cols="12"
-          sm="6"
-          md="6"
-          lg="4"
-          xl="4"
-          class="spaces-col"
-        >
-          <nuxt-link class="container" :to="'/coworking/' + space.id">
-            <div class="photo">
-              <img
-                v-if="space.coworking_photo"
-                :src="`${baseURL}/${space.coworking_photo}`"
-              />
-              <img v-else src="./../public/default-coworking.png" />
-              <div class="rating">
-                <v-rating
-                  readonly
-                  :length="5"
-                  size="x-small"
-                  density="comfortable"
-                  :model-value="4"
-                  color="#AF3800"
-                  background-color="white"
-                  active-color="#AF3800"
-                  class="custom-rating"
-                />
-              </div>
-              <div class="title">
-                <h2 class="space-title">{{ space.coworking_name }}</h2>
-              </div>
-            </div>
-            <div class="info-card">
-              <div class="icons-container down">
+  <div>
+    <section class="search">
+      <v-row class="mb-4 search-wrapper">
+        <v-col cols="12">
+          <v-text-field
+            v-model="searchTerm"
+            label="Пошук по назві коворкінга"
+            outlined
+            dense
+            bg-color="white"
+            prepend-inner-icon="mdi-magnify"
+            class="custom-search-input"
+            variant="solo"
+            clearable
+          ></v-text-field>
+        </v-col>
+      </v-row>
+    </section>
+    <section class="coworkings-list" :class="{ blurred: isMenuOpen }">
+      <div class="spaces-wrapper">
+        <v-row>
+          <v-col
+            v-for="space in filteredSpaces"
+            :key="space.id"
+            cols="12"
+            sm="6"
+            md="6"
+            lg="4"
+            xl="4"
+            class="spaces-col"
+          >
+            <nuxt-link class="container" :to="'/coworking/' + space.id">
+              <div class="photo">
                 <img
-                  v-for="advantage in space.advantages.slice(0, 7)"
-                  :key="advantage.name"
-                  :title="advantage.description"
-                  :src="`${baseURL}/${advantage.icon}`"
+                  v-if="space.coworking_photo"
+                  :src="`${baseURL}/${space.coworking_photo}`"
                 />
-                <v-icon
-                  v-if="space.advantages.length > 7"
-                  color="var(--header-bg)"
-                  class="dots-icon"
-                  >mdi-dots-horizontal</v-icon
-                >
-              </div>
-              <div class="map" @click.stop v-if="space.address">
-                <a
-                  :href="
-                    'https://maps.google.com/?q=' +
-                    encodeURIComponent(space.address)
-                  "
-                  target="_blank"
-                >
-                  <img
-                    src="~assets/spaces_images/location-marker.png"
-                    alt="local"
+                <img v-else src="./../public/default-coworking.png" />
+                <div class="rating">
+                  <v-rating
+                    readonly
+                    :length="5"
+                    size="x-small"
+                    density="comfortable"
+                    :model-value="4"
+                    color="#AF3800"
+                    background-color="white"
+                    active-color="#AF3800"
+                    class="custom-rating"
                   />
-                  <span>{{ space.address }}</span>
-                </a>
-              </div>
-              <div class="icons-container up">
-                <div
-                  class="time"
-                  v-if="space.workday_start && space.workday_end"
-                >
-                  <img src="~assets/spaces_images/time.svg" alt="time icon" />
-
-                  {{ space.workday_start }} - {{ space.workday_end }}
                 </div>
-                <!-- <div class="money">
+                <div class="title">
+                  <h2 class="space-title">{{ space.coworking_name }}</h2>
+                </div>
+              </div>
+              <div class="info-card">
+                <div class="icons-container down">
+                  <img
+                    v-for="advantage in space.advantages.slice(0, 7)"
+                    :key="advantage.name"
+                    :title="advantage.description"
+                    :src="`${baseURL}/${advantage.icon}`"
+                  />
+                  <v-icon
+                    v-if="space.advantages.length > 7"
+                    color="var(--header-bg)"
+                    class="dots-icon"
+                    >mdi-dots-horizontal</v-icon
+                  >
+                </div>
+                <div class="map" @click.stop v-if="space.address">
+                  <a
+                    :href="
+                      'https://maps.google.com/?q=' +
+                      encodeURIComponent(space.address)
+                    "
+                    target="_blank"
+                  >
+                    <img
+                      src="~assets/spaces_images/location-marker.png"
+                      alt="local"
+                    />
+                    <span>{{ space.address }}</span>
+                  </a>
+                </div>
+                <div class="icons-container up">
+                  <div
+                    class="time"
+                    v-if="space.workday_start && space.workday_end"
+                  >
+                    <img src="~assets/spaces_images/time.svg" alt="time icon" />
+
+                    {{ space.workday_start }} - {{ space.workday_end }}
+                  </div>
+                  <!-- <div class="money">
                   <img src="~assets/spaces_images/money.svg" alt="money icon" />
 
                   {{ space.first_price }} грн / {{ space.last_price }} грн
                 </div> -->
+                </div>
+                <nuxt-link
+                  :to="'/coworking/' + space.id"
+                  class="btn"
+                  :class="{ visible: isHovered }"
+                >
+                  Переглянути
+                </nuxt-link>
               </div>
-              <nuxt-link
-                :to="'/coworking/' + space.id"
-                class="btn"
-                :class="{ visible: isHovered }"
-              >
-                Переглянути
-              </nuxt-link>
-            </div>
-          </nuxt-link>
-        </v-col>
-      </v-row>
-      <v-pagination
-        v-model="page"
-        :length="Math.ceil(spacesDataApi.length / perPage)"
-        rounded="0"
-        color="#1A679A"
-        class="custom-pagination"
-      ></v-pagination>
-      <Map :coworkings="spacesDataApi || []" />
-    </div>
-  </section>
+            </nuxt-link>
+          </v-col>
+        </v-row>
+        <v-pagination
+          v-model="page"
+          :length="Math.ceil(spacesDataApi.length / perPage)"
+          rounded="0"
+          color="#1A679A"
+          class="custom-pagination"
+        ></v-pagination>
+        <Map :coworkings="spacesDataApi || []" />
+      </div>
+    </section>
+  </div>
 </template>
 
 <script setup>

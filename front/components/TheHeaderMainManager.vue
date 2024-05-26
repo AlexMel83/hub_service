@@ -13,7 +13,7 @@
         </div>
       </div>
       <p class="header-text">
-        <span class="bold">EduHUB</span> - обирай коворкінг для ефективного
+        <span class="bold">HUB</span> - обирай коворкінг для ефективного
         навчання та роботи.
       </p>
     </div>
