@@ -62,7 +62,7 @@
           <img src="~assets/intita-logo.png" alt="INTITA logo" />
           <p>
             Розроблено студентами<br />
-            Вінницької ІТ-Академії 2023
+            Вінницької ІТ-Академії 2023 - 2024
           </p>
         </nuxt-link>
       </div>

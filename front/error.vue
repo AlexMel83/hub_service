@@ -1,20 +1,22 @@
 <template>
-  <TheHeaderMain />
-  <NuxtLayout name="404">
-    <div>
-      <button class="button" @click="goBack">Повернутися на головну</button>
-    </div>
-  </NuxtLayout>
-  <TheFooterMain />
+  <div v-bind="$attrs">
+    <TheHeaderMain />
+    <NuxtLayout name="404">
+      <div>
+        <button class="button" @click="goBack">Повернутися на головну</button>
+      </div>
+    </NuxtLayout>
+    <TheFooterMain />
+  </div>
 </template>
 
-<script>
-export default {
-  methods: {
-    goBack() {
-      this.$router.push("/");
-    },
-  },
+<script setup>
+import { useAttrs } from "vue";
+const attrs = useAttrs();
+const router = useRouter();
+
+const goBack = () => {
+  router.push("/");
 };
 </script>
 

@@ -37,7 +37,7 @@ export default {
       if (this.$store.state.authUser.name) {
         return this.$store.state.authUser.name;
       } else {
-        return "USERNAME";
+        return "";
       }
     },
     userSurname() {

@@ -1,11 +1,13 @@
 <template>
   <div class="other-page">
     <HeaderAuthUsers />
+
     <div class="auth-user-container">
-      <div class="auth-menu">
+      <div v-if="isLoading" class="auth-menu">
         <component :is="getMenu()" />
       </div>
-      <div class="auth-user-content">
+
+      <div class="auth-user-content" :class="{ 'user-border': isLoading }">
         <NuxtPage></NuxtPage>
       </div>
     </div>
@@ -59,6 +61,7 @@ import HeaderAuthUsers from "~/layouts/headers/HeaderAuthUsers.vue";
 import ManagerMenu from "~/layouts/menuAuthUsers/ManagerMenu.vue";
 import UserMenu from "~/layouts/menuAuthUsers/UserMenu.vue";
 import AdminMenu from "~/layouts/menuAuthUsers/AdminMenu.vue";
+import Loader from "~/components/Loader.vue";
 
 export default {
   components: {
@@ -67,6 +70,7 @@ export default {
     ManagerMenu,
     UserMenu,
     AdminMenu,
+    Loader,
   },
   data() {
     return {
@@ -77,6 +81,9 @@ export default {
   computed: {
     role() {
       return this.$store.state.userRole;
+    },
+    isLoading() {
+      return this.$store.state.isLoading;
     },
   },
   methods: {
@@ -188,12 +195,13 @@ export default {
   }
 
   .auth-user-container .auth-user-content {
-    border: 1px solid var(--text-color);
     width: 100%;
     height: 100%;
     padding: 0px 24px;
   }
-
+  .auth-user-container .auth-user-content.user-border {
+    border: 1px solid var(--text-color);
+  }
   #scrollToTop {
     bottom: 24px;
     right: 24px;

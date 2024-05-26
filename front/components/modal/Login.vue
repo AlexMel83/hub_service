@@ -92,7 +92,8 @@ const bus = useNuxtApp().$bus;
 const props = defineProps({
   initialEmail: {
     type: String,
-    required: true,
+    required: false,
+    default: "",
   },
 });
 const emailProps = ref(props.initialEmail);
@@ -145,13 +146,27 @@ const onSubmit = handleSubmit(async (values) => {
 
   try {
     await $api.post("/login", postObject).then((response) => {
-      if (response.data.statusCode !== 401) {
+      if (
+        response.data.status == 500 &&
+        response.data.message.includes("Користувач з email", "не знайдений")
+      ) {
+        textErrorLogin.value = "даний email незареєстрований";
+      } else if (
+        response.data.status == 400 &&
+        response.data.message.includes("Обліковий запис", "не активовано")
+      ) {
+        textErrorLogin.value = "обліковий запис не активовано, перевірте пошту";
+      } else if (
+        response.data.status == 400 &&
+        response.data.message.includes("Невірний пароль")
+      ) {
+        textPasswordError.value = "невірний пароль";
+      } else if (response.data.statusCode !== 401) {
         store.commit("getUserData", response.data.user);
         localStorage.setItem("access_token", response.data.accessToken);
         localStorage.setItem("userId", response.data.user.id);
         store.commit("setRole", response.data.user.role);
         localStorage.setItem("email", emailValidation.value.value);
-        textErrorLogin.value = "";
         textErrorLogin.value = "";
         bus.$emit("Modal", {
           openModal: false,
@@ -161,13 +176,6 @@ const onSubmit = handleSubmit(async (values) => {
     });
   } catch (error) {
     console.log(error);
-    if (error.response.data.message.includes("не знайдений")) {
-      textErrorLogin.value = "даний email незареєстрований";
-    } else if (error.response.data.message.includes("не активовано")) {
-      textErrorLogin.value = "обліковий запис не активовано, перевірте пошту";
-    } else if (error.response.data.message.includes("Невірний пароль")) {
-      textPasswordError.value = "невірний пароль";
-    }
   }
 });
 </script>

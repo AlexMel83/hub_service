@@ -1,5 +1,8 @@
 <template>
-  <div class="wrapper-manager-coworking" style="min-height: 100vh">
+  <div v-if="!isLoading" style="min-height: 100vh">
+    <Loader />
+  </div>
+  <div v-else class="wrapper-manager-coworking" style="min-height: 100vh">
     <button class="btn-edit" @click="navigateTo('/manager/edit')">
       <img src="~assets/icon_edit.png" alt="edit" />
     </button>
@@ -87,6 +90,9 @@ export default {
     authUser() {
       return this.$store.state.authUser;
     },
+    isLoading() {
+      return this.$store.state.isLoading;
+    },
   },
   methods: {
     setManagerData() {
@@ -109,8 +115,10 @@ export default {
           });
       } catch (error) {
         console.log(error);
+      } finally {
+        this.$store.state.isLoading = true;
+        this.$store.state.activeTabAuthUserMenu = "profileActive";
       }
-      this.$store.state.activeTabAuthUserMenu = "profileActive";
     },
   },
 };

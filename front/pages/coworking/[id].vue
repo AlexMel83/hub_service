@@ -68,14 +68,6 @@
               </div>
             </div>
             <div class="right">
-              <!-- <div class="people flex">
-                <div>
-                  <img src="~assets/spaces_images/people-white.svg" alt="people" />
-                </div>
-                <p>
-                  Робочих місць <span class="big">{{ item.amount }}</span>
-                </p>
-              </div> -->
               <div
                 class="time flex"
                 v-if="
@@ -103,19 +95,6 @@
                   </p>
                 </div>
               </div>
-              <!-- <div class="price flex">
-                <div>
-                  <img src="~assets/spaces_images/money-white.svg" alt="price" />
-                </div>
-                <div class="price-info">
-                  <p class="from">
-                    Від <span class="big">{{ item.first_price }} грн</span>
-                  </p>
-                  <p>
-                    До <span class="big">{{ item.last_price }} грн</span>
-                  </p>
-                </div>
-              </div> -->
               <div class="contacts-box">
                 <div class="tel" v-if="item.phone">
                   <a :href="'tel:' + item.phone" class="contact">
@@ -152,7 +131,6 @@
                     <span class="address">{{ item.address }}</span>
                   </a>
                 </div>
-
                 <div class="social">
                   <div v-for="socialItem in item.social" :key="socialItem.name">
                     <a :href="socialItem.link" target="_blank">
@@ -171,13 +149,6 @@
     </div>
     <div class="coworking-wrapper">
       <div class="info block">
-        <!-- <div class="people flex">
-          <div>
-            <img src="~assets/spaces_images/people-black.svg" alt="people" />
-          </div>
-          <p>Робочих місць {{ item.amount }}</p>
-        </div> -->
-
         <div
           class="time flex"
           v-if="
@@ -199,15 +170,6 @@
             </p>
           </div>
         </div>
-        <!-- <div class="price flex">
-          <div>
-            <img src="~assets/spaces_images/money-black.svg" alt="price" />
-          </div>
-          <div class="price-info">
-            <p>Від {{ item.first_price }} грн</p>
-            <p>До {{ item.last_price }} грн</p>
-          </div>
-        </div> -->
         <div class="tel" v-if="item.phone">
           <a :href="'tel:' + item.phone" class="flex">
             <img src="~assets/spaces_images/phone-black.svg" />
@@ -372,7 +334,9 @@
                   <v-btn
                     class="book-button"
                     v-else
-                    @click="openBookSpace(space.id, space.first_price)"
+                    @click="
+                      openBookSpace(space.id, space.first_price, space.amount)
+                    "
                     >Забронювати</v-btn
                   >
                   <ModalComponents @closeModal="closeModal" />
@@ -383,12 +347,14 @@
         </v-row>
       </div>
     </div>
+    <Review />
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import Review from "~/components/Review.vue";
 import ModalComponents from "~/components/modal/ModalComponents.vue";
+import { ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import { useStore } from "vuex";
 
@@ -418,6 +384,25 @@ onMounted(async () => {
     }
     item.value = coworking;
     item.value.social = JSON.parse(item.value.social);
+
+    for (let space of item.value.spaces) {
+      space.isFavorite =
+        localStorage.getItem(`favorite_${space.id}`) === "true";
+      space.color = localStorage.getItem(`favorite_color_${space.id}`) || "";
+    }
+
+    await getAndSaveFavoritesData(store.state.authUser.role);
+
+    const userFavorites =
+      JSON.parse(localStorage.getItem("userFavorites")) || [];
+    for (let space of item.value.spaces) {
+      const favorite = userFavorites.find(
+        (favorite) => favorite.spaceId === space.id,
+      );
+      if (favorite) {
+        space.isFavorite = favorite.isFavorite;
+      }
+    }
   } catch (error) {
     console.error("Error fetching data:", error);
   }
@@ -431,10 +416,11 @@ const openBookModal = () => {
   });
 };
 
-const openBookSpace = (id, price) => {
+const openBookSpace = (id, price, amount) => {
   //   document.body.style.position = "fixed";
   store.state.currentBookSpace.id = id;
   store.state.currentBookSpace.price = price;
+  store.state.currentBookSpace.amount = amount;
   bus.$emit("Modal", {
     showBookSpace: true,
     openModal: true,
@@ -462,9 +448,70 @@ const toggleDescription = (space) => {
   space.showFullDescription = !space.showFullDescription;
 };
 
-const toggleFavorite = (space) => {
-  space.isFavorite = !space.isFavorite;
+const toggleFavorite = async (space) => {
+  try {
+    if (!space.isFavorite) {
+      await addToFavorites(space);
+      space.isFavorite = true;
+    } else {
+      await removeFromFavorites(space);
+      space.isFavorite = false;
+    }
+  } catch (error) {
+    console.error("Помилка при перемиканні збереженого:", error);
+  }
 };
+
+const addToFavorites = async (space) => {
+  try {
+    await $api.post(`/favorites?spaceId=${space.id}`);
+    const updatedFavorites = [
+      ...JSON.parse(localStorage.getItem("userFavorites")),
+      { spaceId: space.id },
+    ];
+    saveFavoritesToLocalStorage(updatedFavorites);
+  } catch (error) {
+    console.error("Помилка при додаванні простору до збереженого:", error);
+  }
+};
+
+const removeFromFavorites = async (space) => {
+  try {
+    await $api.delete(`/favorites?spaceId=${space.id}`);
+    const updatedFavorites = JSON.parse(
+      localStorage.getItem("userFavorites"),
+    ).filter((fav) => fav.spaceId !== space.id);
+    saveFavoritesToLocalStorage(updatedFavorites);
+  } catch (error) {
+    console.error("Помилка при видаленні простору зі збереженого:", error);
+  }
+};
+
+const saveFavoritesToLocalStorage = (favorites) => {
+  localStorage.setItem("userFavorites", JSON.stringify(favorites));
+};
+
+async function getAndSaveFavoritesData(userRole) {
+  try {
+    if (userRole === "user") {
+      const { $api } = useNuxtApp();
+      const response = await $api.get(
+        `/favorites?userId=${store.state.authUser.id}`,
+      );
+      if (Array.isArray(response.data)) {
+        const favoritesData = response.data.map((favorite) => ({
+          spaceId: favorite.space_id,
+          isFavorite: true,
+        }));
+        saveFavoritesToLocalStorage(favoritesData);
+      } else {
+        console.error("Response data is not an array:", response.data);
+      }
+    }
+  } catch (error) {
+    console.error(error);
+  }
+}
 </script>
 
 <style scoped>

@@ -2,21 +2,21 @@
   <div class="menu" v-if="manager">
     <button
       class="btn"
-      @click="navigateTo('/manager')"
+      @click="goTo('/manager')"
       :class="{ active: activeTab === 'profileActive' }"
     >
       Профіль
     </button>
     <button
       class="btn"
-      @click="navigateTo('/manager/coworking')"
+      @click="goTo('/manager/coworking')"
       :class="{ active: activeTab === 'coworkingActive' }"
     >
       Коворкінг
     </button>
     <button
       class="btn"
-      @click="navigateTo('/manager/books')"
+      @click="goTo('/manager/books')"
       :class="{ active: activeTab === 'booksActive' }"
     >
       Бронювання
@@ -24,7 +24,7 @@
     <button
       class="btn"
       :class="{ active: activeTab === 'reviewsActive' }"
-      @click="navigateTo('/manager/reviews')"
+      @click="goTo('/manager/reviews')"
     >
       Відгуки
     </button>
@@ -39,6 +39,12 @@ export default {
     },
     activeTab() {
       return this.$store.state.activeTabAuthUserMenu;
+    },
+  },
+  methods: {
+    goTo(to) {
+      navigateTo(to);
+      this.$store.state.menuOpen = !this.$store.state.menuOpen;
     },
   },
 };

@@ -1,22 +1,26 @@
 import { useStore } from "vuex";
-import { defineNuxtRouteMiddleware, watchEffect, navigateTo } from "#imports";
+import { defineNuxtRouteMiddleware, navigateTo } from "#imports";
+import { watch } from "vue";
 
 export default defineNuxtRouteMiddleware((to) => {
   const store = useStore();
 
-  watchEffect(() => {
-    if (store.state.userRole != "manager" && to.path === "/manager") {
-      return navigateTo("/");
-    } else if (store.state.userRole != "user" && to.path === "/user") {
-      return navigateTo("/");
-    } else if (store.state.userRole != "admin" && to.path === "/admin") {
-      return navigateTo("/");
-    } else if (store.state.userRole == "unknown" && to.path === "/manager") {
-      return navigateTo("/");
-    } else if (store.state.userRole == "unknown" && to.path === "/user") {
-      return navigateTo("/");
-    } else if (store.state.userRole == "unknown" && to.path === "/admin") {
-      return navigateTo("/");
-    }
-  });
+  watch(
+    () => store.state.userRole,
+    (newRole) => {
+      if (newRole !== "manager" && to.path === "/manager") {
+        return navigateTo("/");
+      } else if (newRole !== "user" && to.path === "/user") {
+        return navigateTo("/");
+      } else if (newRole !== "admin" && to.path === "/admin") {
+        return navigateTo("/");
+      } else if (
+        newRole === "unknown" &&
+        ["/manager", "/user", "/admin"].includes(to.path)
+      ) {
+        return navigateTo("/");
+      }
+    },
+    { immediate: true },
+  );
 });

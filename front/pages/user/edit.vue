@@ -291,8 +291,13 @@ onMounted(() => {
   width: 200px;
   height: 46px;
   margin: 20px;
-  color: var(--text-color);
   border-radius: 6px;
+  background-color: var(--header-bg);
+  color: var(--white-color);
+}
+
+.btn.edit:hover {
+  background-color: var(--btn-hover);
 }
 
 @media (min-width: 375px) {

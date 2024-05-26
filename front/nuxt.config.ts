@@ -1,9 +1,13 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import vuetify, { transformAssetUrls } from "vite-plugin-vuetify";
+require("dotenv").config();
 
 export default defineNuxtConfig({
-  plugins: ["~/plugins/axios", "~/plugins/vuetify"],
-
+  plugins: [
+    "~/plugins/axios",
+    "~/plugins/vuetify",
+    { src: "~/plugins/leaflet.client.js", mode: "client" },
+  ],
   devtools: { enabled: true },
   css: [
     "@mdi/font/css/materialdesignicons.min.css",
@@ -44,6 +48,22 @@ export default defineNuxtConfig({
             "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui",
         },
       ],
+      link: [
+        {
+          rel: "stylesheet",
+          href: "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css",
+          integrity: "sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=",
+          crossorigin: "",
+        },
+      ],
+    },
+  },
+  runtimeConfig: {
+    public: {
+      apiKeyMapbox: process.env.APIKEY_MAPBOX,
+    },
+    private: {
+      // Значения здесь доступны только на стороне сервера
     },
   },
 });

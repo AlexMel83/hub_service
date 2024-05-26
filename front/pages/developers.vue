@@ -153,19 +153,16 @@
         <div class="swiper-wrapper">
           <div class="swiper-slide">
             <div class="mentors">
-              <img
-                class="mentor_pictire"
-                src="~assets/developers/Marianna.png"
-              />
+              <img class="mentor_pictire" src="~assets/developers/Anton.png" />
               <div class="flex_mentors">
                 <a
                   target="_blank"
-                  href="https://www.linkedin.com/in/marianaderlitsa/"
+                  href="https://www.linkedin.com/in/anton-griadchenko-951213a2/"
                   ><img
                     class="linkidin"
                     src="~assets/developers/Linkedin.png"
                   />
-                  <p>Мар’яна<br />Дерлиця</p></a
+                  <p>Антон<br />Грядченко</p></a
                 >
               </div>
             </div>
@@ -212,13 +209,13 @@
         <a
           target="_blank"
           class="link_Linkedin"
-          href="https://www.linkedin.com/in/marianaderlitsa/"
+          href="https://www.linkedin.com/in/anton-griadchenko-951213a2/"
         >
           <div class="mentors">
-            <img class="mentor_pictire" src="~assets/developers/Marianna.png" />
+            <img class="mentor_pictire" src="~assets/developers/Anton.png" />
             <div class="flex_mentors">
               <img class="linkidin" src="~assets/developers/Linkedin.png" />
-              Мар’яна<br />Дерлиця
+              Антон<br />Грядченко
             </div>
           </div>
         </a>
@@ -541,12 +538,11 @@
 import Swiper from "swiper/bundle";
 import "swiper/swiper-bundle.css";
 
-definePageMeta({
-  layout: "dev",
-});
-
 export default {
-  data() {
+  async asyncData({ definePageMeta }) {
+    definePageMeta({
+      layout: "dev",
+    });
     return {
       swiper: null,
     };

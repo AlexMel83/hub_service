@@ -2,26 +2,26 @@
   <div :class="{ 'header-main': true, 'home-page': isHomePage }">
     <div class="header-wrapper">
       <div class="logo-container">
-        <div class="logo">
+        <div @click="hideMenu" class="logo">
           <NuxtLink to="/">
             <img src="~/assets/logo.png" alt="logo" />
           </NuxtLink>
         </div>
         <div class="header-buttons">
-          <template v-if="isAuthed">
-            <div class="is-user bold">
-              <span>{{ this.$store.state.name }}</span>
-              <span>{{ this.$store.state.surname }}</span>
-            </div>
-          </template>
           <span class="lang-active">Ua &nbsp; </span><span> | En</span>
           <v-btn icon @click="toggleMenu" class="burger">
             <img
               v-if="!menuOpen"
-              src="~/assets/profile.svg"
+              src="~/assets/menu.svg"
               alt="Profile Icon"
+              style="width: 30px"
             />
-            <img v-else src="~/assets/profile.svg" alt="Profile Icon" />
+            <img
+              v-else
+              src="~/assets/menu.svg"
+              alt="Profile Icon"
+              style="width: 30px"
+            />
           </v-btn>
           <template v-if="!isAuthed">
             <v-btn class="header-btn" @click="openRegistration">
@@ -81,15 +81,21 @@ export default {
     },
   },
   methods: {
+    hideMenu() {
+      this.menuOpen = false;
+    },
     toggleMenu() {
       this.menuOpen = !this.menuOpen;
       this.$store.commit("toggleMenu");
     },
     closeModal() {
-      document.body.style.position = "";
+      this.isModalOpen = false;
+      document.body.style.overflow = "";
+      document.documentElement.style.overflow = "";
     },
     openRegistration() {
-      document.body.style.position = "fixed";
+      document.body.style.overflow = "hidden";
+      document.documentElement.style.overflow = "hidden";
       this.$bus.$emit("Modal", {
         showRegistration: true,
         openModal: true,
@@ -97,7 +103,8 @@ export default {
     },
     openLogin() {
       if (window.innerWidth > 768) {
-        document.body.style.position = "fixed";
+        document.body.style.overflow = "hidden";
+        document.documentElement.style.overflow = "hidden";
         this.$bus.$emit("Modal", {
           showLogin: true,
           openModal: true,
@@ -161,7 +168,7 @@ export default {
 }
 
 .menu {
-  position: absolute;
+  position: relative;
   top: 100%;
   left: 0;
   width: 100%;

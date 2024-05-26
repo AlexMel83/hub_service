@@ -56,7 +56,7 @@
             <div class="info-card">
               <div class="icons-container down">
                 <img
-                  v-for="(advantage, index) in space.advantages.slice(0, 7)"
+                  v-for="advantage in space.advantages.slice(0, 7)"
                   :key="advantage.name"
                   :title="advantage.description"
                   :src="`${baseURL}/${advantage.icon}`"
@@ -116,6 +116,7 @@
         color="#1A679A"
         class="custom-pagination"
       ></v-pagination>
+      <Map :coworkings="spacesDataApi || []" />
     </div>
   </section>
 </template>
@@ -152,7 +153,6 @@ const fetchCoworkings = async (searchQuery = null) => {
     spacesDataApi.value = response.data.filter(
       (space) => space.published === true,
     );
-    // spacesDataApi.value = response.data;
   } catch (error) {
     console.error("Error fetching coworkings data:", error);
   }

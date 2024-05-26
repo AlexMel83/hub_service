@@ -2,7 +2,7 @@
   <div :class="{ 'header-main': true, 'home-page': isHomePage }">
     <div class="header-wrapper">
       <div class="logo-container">
-        <div class="logo">
+        <div @click="hideMenu" class="logo">
           <NuxtLink to="/">
             <img src="~/assets/logo.png" alt="logo" />
           </NuxtLink>
@@ -16,15 +16,21 @@
           </div>
           <v-btn icon @click="toggleMenu" class="burger">
             <img
-              v-if="!menuOpen"
-              src="~/assets/profile.svg"
+              v-if="!isMenuOpen"
+              src="~/assets/menu.svg"
               alt="Profile Icon"
+              style="width: 30px"
             />
-            <img v-else src="~/assets/profile.svg" alt="Profile Icon" />
+            <img
+              v-else
+              src="~/assets/menu.svg"
+              alt="Profile Icon"
+              style="width: 30px"
+            />
           </v-btn>
         </div>
       </div>
-      <div class="menu" v-if="menuOpen">
+      <div class="menu" v-if="isMenuOpen">
         <div class="mobile-auth-user-name">
           <UserName />
         </div>
@@ -60,13 +66,19 @@ export default {
     isHomePage() {
       return this.$route.path === "/";
     },
+    isMenuOpen() {
+      return this.$store.state.menuOpen;
+    },
     role() {
       return this.$store.state.userRole;
     },
   },
   methods: {
+    hideMenu() {
+      this.$store.state.menuOpen = false;
+    },
     toggleMenu() {
-      this.menuOpen = !this.menuOpen;
+      this.$store.state.menuOpen = !this.$store.state.menuOpen;
     },
     changeCompenent() {
       this.menuLogin = !this.menuLogin;
@@ -135,7 +147,7 @@ export default {
 }
 
 .menu {
-  position: absolute;
+  position: relative;
   top: 100%;
   left: 0;
   width: 100%;

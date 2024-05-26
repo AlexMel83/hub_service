@@ -1,5 +1,8 @@
 <template>
-  <div class="about-coworking test">
+  <div v-if="!isLoading()" style="min-height: 100vh">
+    <Loader />
+  </div>
+  <div v-else class="about-coworking test">
     <h1>СТОРІНКА ВІДГУКІВ ЗНАХОДІТЬСЯ У РОЗРОБЦІ</h1>
   </div>
 </template>
@@ -11,7 +14,7 @@ const store = useStore();
 definePageMeta({
   layout: "layout-auth-users",
 });
-
+const isLoading = () => store.state.isLoading;
 function setManagerData() {
   if (localStorage.getItem("managerData")) {
     store.commit(
@@ -20,6 +23,7 @@ function setManagerData() {
     );
   }
   store.state.activeTabAuthUserMenu = "reviewsActive";
+  store.state.isLoading = true;
 }
 
 onMounted(() => {

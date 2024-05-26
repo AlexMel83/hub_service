@@ -3,21 +3,21 @@
     <button
       class="btn"
       :class="{ active: activeTab === 'profileActive' }"
-      @click="navigateTo('/user')"
+      @click="goTo('/user')"
     >
       Профіль
     </button>
     <button
       class="btn"
       :class="{ active: activeTab === 'favoriteActive' }"
-      @click="navigateTo('/user/favorite')"
+      @click="goTo('/user/favorite')"
     >
       Збережені
     </button>
     <button
       class="btn"
       :class="{ active: activeTab === 'historyActive' }"
-      @click="navigateTo('/user/history')"
+      @click="goTo('/user/history')"
     >
       Історія
     </button>
@@ -32,6 +32,12 @@ export default {
     },
     activeTab() {
       return this.$store.state.activeTabAuthUserMenu;
+    },
+  },
+  methods: {
+    goTo(to) {
+      navigateTo(to);
+      this.$store.state.menuOpen = !this.$store.state.menuOpen;
     },
   },
 };

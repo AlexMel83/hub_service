@@ -121,8 +121,7 @@
           <input
             @input="onPersonInput"
             v-bind="peopleValidation"
-            type="text"
-            maxlength="3"
+            type="number"
           />
           <img src="~assets/icon_amount.png" alt="icon" />
         </div>
@@ -131,7 +130,9 @@
         </div>
       </div>
     </div>
-    <button type="submit">Забронювати</button>
+    <button type="submit">
+      Забронювати <span v-if="totalPrice">за {{ totalPrice }} грн</span>
+    </button>
     <TheModal
       @close="closeModal"
       v-if="isShownModal"
@@ -149,6 +150,7 @@ import { useStore } from "vuex";
 const store = useStore();
 const bus = useNuxtApp().$bus;
 const { $api } = useNuxtApp();
+let totalPrice = ref(null);
 
 const { defineInputBinds, errors, handleSubmit, setFieldValue } = useForm({
   validationSchema: yup.object({
@@ -188,7 +190,13 @@ const { defineInputBinds, errors, handleSubmit, setFieldValue } = useForm({
           new Date(`${firstDate} ${value}`)
         );
       }),
-    peopleValidation: yup.string().required("Введіть кількість осіб"),
+    peopleValidation: yup
+      .number()
+      .required("Введіть кількість осіб")
+      .max(
+        store.state.currentBookSpace.amount,
+        `лише ${store.state.currentBookSpace.amount} місць`,
+      ),
   }),
 });
 var modalTitle = ref("");
@@ -252,13 +260,16 @@ function bookSpace(values) {
         )) /
       (1000 * 60);
     if (currentTime <= 60) {
-      return store.state.currentBookSpace.price;
+      return store.state.currentBookSpace.price * values.peopleValidation;
     } else {
       return Math.ceil(
-        Math.ceil(currentTime / 30) * (store.state.currentBookSpace.price / 2),
+        Math.ceil(currentTime / 30) *
+          (store.state.currentBookSpace.price / 2) *
+          values.peopleValidation,
       );
     }
   };
+
   try {
     $api
       .post("/bookings", {
@@ -274,13 +285,9 @@ function bookSpace(values) {
       })
       .then((response) => {
         if (response.data) {
-          bus.$emit("Modal", {
-            openModal: true,
-            showLogin: false,
-            showRegistration: false,
-            showBookSpace: false,
-            textModalMessage: ` ${values.nameValidation}, наш менеджер зв’яжеться з Вами найближчим часом для підтвердження бронювання`,
-          });
+          window.location.href = response.data;
+        } else {
+          // Обработать другие случаи
         }
       });
   } catch (error) {
@@ -290,7 +297,12 @@ function bookSpace(values) {
 
 const onSubmit = handleSubmit(async (values) => {
   const bookAuthUser = () => {
-    if (authUser().name && authUser().email && authUser().surname) {
+    if (
+      authUser().name &&
+      authUser().email &&
+      authUser().surname &&
+      authUser().phone
+    ) {
       try {
         $api.get(`/users?id=${store.state.authUser.id}`).then((response) => {
           if (response.data.id) {
@@ -370,6 +382,40 @@ function onInputPhone(event) {
   );
   phoneValidation = event.target.value;
 }
+
+watchEffect(() => {
+  if (
+    firstTimeValidation.value.value &&
+    lastTimeValidation.value.value &&
+    firstDateValidation.value.value &&
+    peopleValidation.value.value
+  ) {
+    totalPrice.value = showTotalPrice(
+      firstDateValidation.value.value,
+      firstTimeValidation.value.value,
+      lastTimeValidation.value.value,
+      peopleValidation.value.value,
+    );
+  }
+});
+
+const showTotalPrice = (firstDate, firstTime, lastTime, people) => {
+  let currentTime =
+    (new Date(`${firstDate}T${lastTime}:00`) -
+      new Date(`${firstDate}T${firstTime}:00`)) /
+    (1000 * 60);
+  if (currentTime <= 0) {
+    return null;
+  } else if (currentTime <= 60) {
+    return store.state.currentBookSpace.price * people;
+  } else {
+    return Math.ceil(
+      Math.ceil(currentTime / 30) *
+        (store.state.currentBookSpace.price / 2) *
+        people,
+    );
+  }
+};
 </script>
 
 <style>

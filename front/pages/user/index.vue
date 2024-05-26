@@ -1,11 +1,14 @@
 <template>
-  <div class="wrapper-manager-coworking" style="min-height: 100vh">
+  <div v-if="!isLoad" style="min-height: 100vh">
+    <Loader />
+  </div>
+  <div v-else class="wrapper-manager-coworking" style="min-height: 100vh">
     <button class="btn-edit" @click="navigateTo('/user/edit')">
       <img src="~assets/icon_edit.png" alt="edit" />
     </button>
     <div class="basic-information">
       <h2 class="indent-mng-bnt">Інформація профілю</h2>
-
+      <Loader v-if="isLoading" />
       <div class="info-wrapper">
         <div class="property">E-mail</div>
         <div class="value">
@@ -28,7 +31,6 @@
           />
         </div>
       </div> -->
-
       <div class="info-wrapper">
         <div class="property">Ім'я</div>
         <div class="value">
@@ -70,13 +72,18 @@
 </template>
 
 <script>
-definePageMeta({
-  layout: "layout-auth-users",
-});
-
 export default {
-  data() {
+  async asyncData({ definePageMeta }) {
+    definePageMeta({
+      layout: "layout-auth-users",
+    });
     return {};
+  },
+
+  data() {
+    return {
+      isLoading: false,
+    };
   },
 
   mounted() {
@@ -86,6 +93,9 @@ export default {
   computed: {
     authUser() {
       return this.$store.state.authUser;
+    },
+    isLoad() {
+      return this.$store.state.isLoading;
     },
   },
   methods: {
@@ -98,6 +108,7 @@ export default {
       }
     },
     getUserData() {
+      this.isLoading = true;
       try {
         const { $api } = useNuxtApp();
         $api
@@ -109,8 +120,11 @@ export default {
           });
       } catch (error) {
         console.log(error);
+      } finally {
+        this.isLoading = false;
       }
       this.$store.state.activeTabAuthUserMenu = "profileActive";
+      this.$store.state.isLoading = true;
     },
   },
 };

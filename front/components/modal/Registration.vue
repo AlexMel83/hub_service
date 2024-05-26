@@ -257,19 +257,24 @@ const onSubmit = handleSubmit(async (values) => {
         role: userRole.value,
       })
       .then((response) => {
-        emailError.value = "";
-        bus.$emit("Modal", {
-          openModal: true,
-          showLogin: false,
-          showRegistration: false,
-          textModalMessage:
-            "На зазначену Вами електронну пошту надіслано лист з посиланням, перейдіть по ньому для активації аккаунту.",
-        });
+        if (
+          response.data.status == 400 &&
+          response.data.message.includes("already exist")
+        ) {
+          emailError.value = "даний email вже зареєстрований";
+        } else {
+          emailError.value = "";
+          bus.$emit("Modal", {
+            openModal: true,
+            showLogin: false,
+            showRegistration: false,
+            textModalMessage:
+              "На зазначену Вами електронну пошту надіслано лист з посиланням, перейдіть по ньому для активації аккаунту.",
+          });
+        }
       });
   } catch (error) {
-    if (error.response.data.message.includes("already exist")) {
-      emailError.value = "даний email вже зареєстрований";
-    }
+    console.log(error);
   }
 });
 

@@ -1,4 +1,7 @@
 <template>
+  <div v-if="!isLoading" style="min-height: 100vh">
+    <Loader />
+  </div>
   <div>
     <Current v-if="manager" />
     <Create v-else />
@@ -8,13 +11,14 @@
 <script>
 import Current from "~/pages/manager/coworking/current.vue";
 import Create from "~/pages/manager/coworking/create.vue";
+import Loader from "~/components/Loader.vue";
 
 definePageMeta({
   layout: "layout-auth-users",
 });
 
 export default {
-  components: { Current, Create },
+  components: { Current, Create, Loader },
   data() {
     return {};
   },
@@ -29,18 +33,24 @@ export default {
     authUser() {
       return this.$store.state.authUser;
     },
+    isLoading() {
+      return this.$store.state.isLoading;
+    },
   },
   methods: {
-    getData() {
+    async getData() {
       const { $api } = useNuxtApp();
 
       try {
-        $api.get(`/coworkings?user_id=${this.authUser.id}`).then((response) => {
-          this.$store.commit("getManagerData", response.data[0]);
-          this.$store.state.activeTabAuthUserMenu = "coworkingActive";
-        });
+        const response = await $api.get(
+          `/coworkings?user_id=${this.authUser.id}`,
+        );
+        this.$store.commit("getManagerData", response.data[0]);
+        this.$store.state.activeTabAuthUserMenu = "coworkingActive";
       } catch (error) {
         console.log(error);
+      } finally {
+        this.$store.state.isLoading = true;
       }
     },
   },
