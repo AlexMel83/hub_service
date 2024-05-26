@@ -1,6 +1,10 @@
 const ApiError = require("../../exceptions/api-errors");
 const favoriteModel = require("../../models/favorite-model");
 
+const BdError = {
+  unique_violation: "23505",
+};
+
 module.exports = {
   async createFavoriteSpace(req, res) {
     const userId = req.user.id;
@@ -18,8 +22,8 @@ module.exports = {
       }
     } catch (error) {
       console.error(error);
-      if (error.code === "23505") {
-        return res.json(ApiError.BadRequest(error.detail));
+      if (error.code === BdError.unique_violation) {
+        return res.json(ApiError.BadRequest("unique_violation"));
       } else {
         return res.json(ApiError.IntServError(error.detail));
       }
@@ -27,7 +31,7 @@ module.exports = {
   },
 
   async getFavoritesSpacesByUserId(req, res) {
-    const userId = req.user.id;
+    const userId = req.query.user_id ? req.query.user_id : req.user.id;
     try {
       const response = await favoriteModel.getFavoritesByUserId(userId);
       if (response.length) {

@@ -12,6 +12,8 @@ const mainfields = [
     "coworkings.id",
     "coworking_name",
     "address",
+    "location",
+    "formatted_address",
     "phone",
     "email",
     "social",
@@ -36,6 +38,8 @@ const mainfields = [
     "coworkings.id",
     "coworking_name",
     "address",
+    "location",
+    "formatted_address",
     "phone",
     "email",
     "social",
@@ -86,7 +90,7 @@ module.exports = {
           "=",
           "coworking_worktime.coworking_id",
         )
-        .select(mainfields);
+        .select([...mainfields, knex.raw("ST_AsEWKT(location) as location")]);
 
       if (!coworkingsData.length) {
         throw ApiError.NotFoundError("coworkings");
@@ -122,7 +126,7 @@ module.exports = {
           "=",
           "coworking_worktime.coworking_id",
         )
-        .select(mainfields)
+        .select([...mainfields, knex.raw("ST_AsEWKT(location) as location")])
         .whereRaw("LOWER(coworkings.coworking_name) LIKE ?", [
           `%${name.toLowerCase()}%`,
         ]);
@@ -154,7 +158,7 @@ module.exports = {
           "=",
           "coworking_worktime.coworking_id",
         )
-        .select(mainfields)
+        .select([...mainfields, knex.raw("ST_AsEWKT(location) as location")])
         .where({ "coworkings.id": id });
 
       if (!coworkingsData.length) {
@@ -189,7 +193,7 @@ module.exports = {
           "=",
           "coworking_worktime.coworking_id",
         )
-        .select(mainfields)
+        .select([...mainfields, knex.raw("ST_AsEWKT(location) as location")])
         .where({ "coworkings.user_id": user_id });
 
       if (!coworkingsData[0]) {
@@ -214,27 +218,7 @@ module.exports = {
   },
 
   async addCoworking(fields) {
-    const coworkingData = {
-      coworking_name: fields?.coworking_name,
-      address: fields?.address,
-      phone: fields?.phone,
-      email: fields?.email,
-      social: fields?.social,
-      coworking_photo: fields?.coworking_photo,
-      description: fields?.description,
-      user_id: fields?.user_id,
-      published: fields?.published,
-    };
-    let pricesData,
-      worktimesData,
-      advantages = [];
-
-    const trx = await knex.transaction();
-
-    const coworkingId = await trx(COWORKINGS_TABLE)
-      .insert(coworkingData)
-      .returning("id");
-
+    let coworkingId = null;
     async function insertPrices(data) {
       try {
         pricesData = await trx(PRICES_TABLE)
@@ -266,7 +250,29 @@ module.exports = {
       }
     }
 
+    const coworkingData = {
+      coworking_name: fields?.coworking_name,
+      address: fields?.address,
+      location: fields?.location,
+      formatted_address: fields?.formatted_address,
+      phone: fields?.phone,
+      email: fields?.email,
+      social: fields?.social,
+      coworking_photo: fields?.coworking_photo,
+      description: fields?.description,
+      user_id: fields?.user_id,
+      published: fields?.published,
+    };
+    let pricesData,
+      worktimesData,
+      advantages = [];
+
+    const trx = await knex.transaction();
     try {
+      coworkingId = await trx(COWORKINGS_TABLE)
+        .insert(coworkingData)
+        .returning("id");
+
       if (fields.advantages) {
         const advantagesIdsArray = parseAdvantageIds(fields.advantages);
         const invalidIds = advantagesIdsArray.filter((id) => isNaN(id));
@@ -340,6 +346,8 @@ module.exports = {
         .update({
           coworking_name: fields?.coworking_name,
           address: fields?.address,
+          location: fields?.location,
+          formatted_address: fields?.formatted_address,
           phone: fields?.phone,
           email: fields?.email,
           social: fields?.social,

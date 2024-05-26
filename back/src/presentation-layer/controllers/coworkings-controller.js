@@ -1,6 +1,6 @@
 const coworkingModel = require("../../models/coworking-model");
+const GisService = require("../../services/gis-service");
 const ApiError = require("../../exceptions/api-errors");
-
 class CoworkingsController {
   async getCoworkings(req, res) {
     try {
@@ -31,6 +31,11 @@ class CoworkingsController {
     fields.coworking_photo = req.file ? req.file.path : "";
 
     try {
+      if (fields.address) {
+        const geocodeResult = await GisService.geocodeAddress(fields.address);
+        fields.location = geocodeResult.location;
+        fields.formatted_address = geocodeResult.formattedAddress;
+      }
       const coworking = await coworkingModel.addCoworking(fields);
       return res.status(200).json(coworking);
     } catch (error) {
@@ -72,6 +77,11 @@ class CoworkingsController {
     }
 
     try {
+      if (fields.address) {
+        const geocodeResult = await GisService.geocodeAddress(fields.address);
+        fields.location = geocodeResult.location;
+        fields.formatted_address = geocodeResult.formattedAddress;
+      }
       let updatedCoworking;
       const coworking = await coworkingModel.getOneCoworkingById(fields.id);
       if (coworking.length === 0) {

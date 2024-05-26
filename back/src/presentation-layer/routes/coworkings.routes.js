@@ -1,9 +1,9 @@
 const coworkingsController = require("../controllers/coworkings-controller");
-const { body, query, validationResult } = require("express-validator");
+const { body, query } = require("express-validator");
 const authMiddleware = require("../../middlewares/auth-middleware");
 const upload = require("../../middlewares/upload");
 const phoneRegex = /^380\d{9}$/;
-const ApiError = require("../../exceptions/api-errors");
+const validateMiddleware = require("../../middlewares/validate-middleware");
 
 const validateCoworks = [
   body("coworking_name")
@@ -34,55 +34,55 @@ const validateCoworks = [
   body("description")
     .optional({ checkFalsy: true })
     .isString()
-    .withMessage('Поле "description" має бути числом'),
+    .withMessage('Поле "description" має бути рядком'),
   body("first_price")
     .optional({ checkFalsy: true })
     .isNumeric()
     .withMessage('Поле "first_price" має бути числом'),
   body("last_price")
     .optional({ checkFalsy: true })
-    .isString()
+    .isNumeric()
     .withMessage('Поле "last_price" має бути числом'),
   body("workday")
     .optional({ checkFalsy: true })
-    .isString()
+    .isNumeric()
     .withMessage('Поле "workday" має бути числом'),
   body("weekend")
     .optional({ checkFalsy: true })
-    .isString()
+    .isNumeric()
     .withMessage('Поле "weekend" має бути числом'),
   body("hour")
     .optional({ checkFalsy: true })
-    .isString()
+    .isNumeric()
     .withMessage('Поле "hour" має бути числом'),
   body("amount")
     .optional({ checkFalsy: true })
-    .isString()
+    .isNumeric()
     .withMessage('Поле "amount" має бути числом'),
   body("start_work")
     .optional({ checkFalsy: true })
     .isString()
-    .withMessage('Поле "start_work" має бути числом'),
+    .withMessage('Поле "start_work" має бути рядком'),
   body("end_work")
     .optional({ checkFalsy: true })
     .isString()
-    .withMessage('Поле "end_work" має бути числом'),
+    .withMessage('Поле "end_work" має бути рядком'),
   body("workday_start")
     .optional({ checkFalsy: true })
     .isString()
-    .withMessage('Поле "workday_start" має бути числом'),
+    .withMessage('Поле "workday_start" має бути рядком'),
   body("workday_end")
     .optional({ checkFalsy: true })
     .isString()
-    .withMessage('Поле "workday_end" має бути числом'),
+    .withMessage('Поле "workday_end" має бути рядком'),
   body("dayoff_start")
     .optional({ checkFalsy: true })
     .isString()
-    .withMessage('Поле "dayoff_start" має бути числом'),
+    .withMessage('Поле "dayoff_start" має бути рядком'),
   body("dayoff_end")
     .optional({ checkFalsy: true })
     .isString()
-    .withMessage('Поле "dayoff_end" має бути числом'),
+    .withMessage('Поле "dayoff_end" має бути рядком'),
   body("published")
     .optional({ checkFalsy: true })
     .isBoolean()
@@ -90,22 +90,30 @@ const validateCoworks = [
 ];
 
 module.exports = function (app) {
-  app.get("/coworkings", coworkingsController.getCoworkings);
+  app.get(
+    "/coworkings",
+    query("id")
+      .optional({ checkFalsy: true })
+      .isNumeric()
+      .withMessage("id is number"),
+    query("user_id")
+      .optional({ checkFalsy: true })
+      .isNumeric()
+      .withMessage("user_id is number"),
+    query("name")
+      .optional({ checkFalsy: true })
+      .isString()
+      .withMessage("name is string"),
+    validateMiddleware,
+    coworkingsController.getCoworkings,
+  );
 
   app.post(
     "/coworkings",
     authMiddleware,
     upload.single("coworking_photo"),
     validateCoworks,
-    (req, res, next) => {
-      const errors = validationResult(req);
-      if (!errors.isEmpty()) {
-        return res.json(
-          ApiError.BadRequest("Помилка при валідації", errors.array()),
-        );
-      }
-      next();
-    },
+    validateMiddleware,
     coworkingsController.addCoworking,
   );
 
@@ -115,15 +123,7 @@ module.exports = function (app) {
     upload.single("coworking_photo"),
     validateCoworks,
     body("id").notEmpty().withMessage("Id is required"),
-    (req, res, next) => {
-      const errors = validationResult(req);
-      if (!errors.isEmpty()) {
-        return res.json(
-          ApiError.BadRequest("Помилка при валідації", errors.array()),
-        );
-      }
-      next();
-    },
+    validateMiddleware,
     coworkingsController.updateCoworking,
   );
 
@@ -131,15 +131,7 @@ module.exports = function (app) {
     "/coworkings",
     authMiddleware,
     query("id").notEmpty().withMessage("Id is required"),
-    (req, res, next) => {
-      const errors = validationResult(req);
-      if (!errors.isEmpty()) {
-        return res.json(
-          ApiError.BadRequest("Помилка при валідації", errors.array()),
-        );
-      }
-      next();
-    },
+    validateMiddleware,
     coworkingsController.removeCoworking,
   );
 };

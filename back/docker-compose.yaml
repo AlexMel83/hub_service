@@ -18,7 +18,7 @@ services:
 
   postgres:
     container_name: eduhub_bd
-    image: postgres:16-alpine
+    image: postgis/postgis:16-master
     env_file:
       - .env
     expose:
@@ -27,9 +27,11 @@ services:
       - ${POSTGRES_PORT}:5432
     environment:
       PG_DATA: /var/lib/postgresql/data
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
       - ./pgdata:/var/lib/postgresql/data
-      # - ./sql/pg_coworking_demo.sql:/docker-entrypoint-initdb.d/pg_coworking_demo.sql
     restart: always
 
 volumes:

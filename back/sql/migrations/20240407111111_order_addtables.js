@@ -64,9 +64,11 @@ exports.up = async function (knex) {
       table.foreign("booking_id").references("bookings.id").onDelete("CASCADE");
       table.string("payment_method", 100).notNullable();
       table.integer("amount").notNullable();
-      table.string("status", 100).notNullable();
-      table.timestamp("payment_date").notNullable();
-      table.string("payment_reference", 100).notNullable();
+      table.string("currency", 10).notNullable();
+      table.string("description").notNullable();
+      table.string("activation_link").notNullable();
+      table.integer("lifetime").nullable();
+      table.string("payment_reference", 100).nullable();
       table.timestamp("created_at").defaultTo(knex.fn.now()).notNullable();
       table.timestamp("updated_at").defaultTo(knex.fn.now()).notNullable();
     });
@@ -80,10 +82,11 @@ exports.up = async function (knex) {
         .foreign("coworking_id")
         .references("coworkings.id")
         .onDelete("CASCADE");
-      table.text("content").notNullable();
+      table.text("content").nullable();
       table.integer("rating").notNullable();
       table.timestamp("created_at").defaultTo(knex.fn.now()).notNullable();
       table.timestamp("updated_at").defaultTo(knex.fn.now()).notNullable();
+      table.unique(["coworking_id", "user_id"]);
     });
 
     await trx.schema.createTable("notifications", (table) => {

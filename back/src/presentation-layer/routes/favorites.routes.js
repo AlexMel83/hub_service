@@ -1,7 +1,7 @@
 const favoritesController = require("../controllers/favorites-controller");
 const authMiddleware = require("../../middlewares/auth-middleware");
-const { body, query, validationResult } = require("express-validator");
-const ApiError = require("../../exceptions/api-errors");
+const { body, query } = require("express-validator");
+const validateMiddleware = require("../../middlewares/validate-middleware");
 
 module.exports = function (app) {
   app.post(
@@ -12,29 +12,18 @@ module.exports = function (app) {
       .withMessage("spaceId is required")
       .isNumeric()
       .withMessage("spaceId must be a number"),
-    (req, res, next) => {
-      const errors = validationResult(req);
-      if (!errors.isEmpty()) {
-        return res.json(
-          ApiError.BadRequest("Помилка при валідації", errors.array()),
-        );
-      }
-      next();
-    },
+    validateMiddleware,
     favoritesController.createFavoriteSpace,
   );
 
   app.get(
     "/favorites",
     authMiddleware,
-    async (req, res, next) => {
-      const errors = validationResult(req);
-      if (!errors.isEmpty()) {
-        return res
-          .status(400)
-          .json(ApiError.BadRequest("Помилка при валідації", errors.array()));
-      } else next();
-    },
+    query("user_id")
+      .optional({ checkFalsy: true })
+      .isNumeric()
+      .withMessage("user_id is number"),
+    validateMiddleware,
     favoritesController.getFavoritesSpacesByUserId,
   );
 
@@ -46,15 +35,7 @@ module.exports = function (app) {
       .withMessage('Поле "spaceIds" обов\'язкове для заповнення')
       .isArray()
       .withMessage('Поле "spaceIds" повинно бути масивом'),
-    (req, res, next) => {
-      const errors = validationResult(req);
-      if (!errors.isEmpty()) {
-        return res.json(
-          ApiError.BadRequest("Помилка при валідації", errors.array()),
-        );
-      }
-      next();
-    },
+    validateMiddleware,
     favoritesController.updateFavoritesByUserId,
   );
 
@@ -66,15 +47,7 @@ module.exports = function (app) {
       .withMessage("spaceId is required")
       .isNumeric()
       .withMessage("spaceId must be a number"),
-    (req, res, next) => {
-      const errors = validationResult(req);
-      if (!errors.isEmpty()) {
-        return res.json(
-          ApiError.BadRequest("Помилка при валідації", errors.array()),
-        );
-      }
-      next();
-    },
+    validateMiddleware,
     favoritesController.deleteFavoriteBySpaceId,
   );
 };

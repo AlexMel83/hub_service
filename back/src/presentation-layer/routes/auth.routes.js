@@ -1,8 +1,8 @@
 const userController = require("../controllers/user-controller");
-const { body, param, query, validationResult } = require("express-validator");
+const { body, param, query } = require("express-validator");
 const authMiddleware = require("../../middlewares/auth-middleware");
 const phoneRegex = /^380\d{9}$/;
-const ApiError = require("../../exceptions/api-errors");
+const validateMiddleware = require("../../middlewares/validate-middleware");
 
 const validateUser = [
   body("email")
@@ -36,32 +36,11 @@ module.exports = function (app) {
   app.post(
     "/registration",
     validateUser,
-    (req, res, next) => {
-      const errors = validationResult(req);
-      if (!errors.isEmpty()) {
-        return res.json(
-          ApiError.BadRequest("Помилка при валідації", errors.array()),
-        );
-      }
-      next();
-    },
+    validateMiddleware,
     userController.registration,
   );
 
-  app.post(
-    "/login",
-    validateUser,
-    (req, res, next) => {
-      const errors = validationResult(req);
-      if (!errors.isEmpty()) {
-        return res.json(
-          ApiError.BadRequest("Помилка при валідації", errors.array()),
-        );
-      }
-      next();
-    },
-    userController.login,
-  );
+  app.post("/login", validateUser, validateMiddleware, userController.login);
 
   app.post("/logout", userController.logout);
   app.get("/activate/:link", userController.activate);
@@ -70,15 +49,7 @@ module.exports = function (app) {
     "/users",
     authMiddleware,
     query("id").notEmpty().withMessage("Id is required"),
-    (req, res, next) => {
-      const errors = validationResult(req);
-      if (!errors.isEmpty()) {
-        return res.json(
-          ApiError.BadRequest("Помилка при валідації", errors.array()),
-        );
-      }
-      next();
-    },
+    validateMiddleware,
     userController.getUser,
   );
 
@@ -87,15 +58,7 @@ module.exports = function (app) {
     authMiddleware,
     validateUser,
     body("id").notEmpty().withMessage("Id is required"),
-    (req, res, next) => {
-      const errors = validationResult(req);
-      if (!errors.isEmpty()) {
-        return res.json(
-          ApiError.BadRequest("Помилка при валідації", errors.array()),
-        );
-      }
-      next();
-    },
+    validateMiddleware,
     userController.editUser,
   );
 
@@ -103,15 +66,7 @@ module.exports = function (app) {
     "/users/:user_id",
     authMiddleware,
     param("user_id").exists().isNumeric(),
-    (req, res, next) => {
-      const errors = validationResult(req);
-      if (!errors.isEmpty()) {
-        return res.json(
-          ApiError.BadRequest("Помилка при валідації", errors.array()),
-        );
-      }
-      next();
-    },
+    validateMiddleware,
     userController.deleteUser,
   );
 };

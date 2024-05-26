@@ -27,29 +27,44 @@ module.exports = {
   },
 
   async findUserByEmail(email) {
-    const candidate = await knex(UsersTable)
-      .select(userFields)
-      .where("email", "=", email)
-      .first();
-    return candidate ? candidate : null;
+    try {
+      const candidate = await knex(UsersTable)
+        .select(userFields)
+        .where("email", "=", email)
+        .first();
+      return candidate ? candidate : null;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
   },
 
   async findUserByEmailWithHash(email) {
     const userFieldsWithHash = userFields;
     userFieldsWithHash.splice(2, 0, "password");
-    const candidate = await knex(UsersTable)
-      .select(userFields)
-      .where("email", "=", email)
-      .first();
-    return candidate ? candidate : null;
+    try {
+      const candidate = await knex(UsersTable)
+        .select(userFields)
+        .where("email", "=", email)
+        .first();
+      return candidate ? candidate : null;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
   },
 
   async findUserById(userId) {
-    const candidate = await knex(UsersTable)
-      .select(userFields)
-      .where("id", "=", userId)
-      .first();
-    return candidate ? candidate : null;
+    try {
+      const candidate = await knex(UsersTable)
+        .select(userFields)
+        .where("id", "=", userId)
+        .first();
+      return candidate ? candidate : null;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
   },
 
   async findUserByActivationLink(activationLink, trx) {
@@ -64,15 +79,25 @@ module.exports = {
   },
 
   async editUser(payload) {
-    const result = await knex(UsersTable)
-      .where({ id: payload.id })
-      .update(payload)
-      .returning(userFields);
-    return result[0];
+    try {
+      const result = await knex(UsersTable)
+        .where({ id: payload.id })
+        .update(payload)
+        .returning(userFields);
+      return result[0];
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
   },
 
   async deleteUser(userId) {
-    await knex(UsersTable).where({ id: userId }).del();
-    return { id: userId };
+    try {
+      await knex(UsersTable).where({ id: userId }).del();
+      return { id: userId };
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
   },
 };

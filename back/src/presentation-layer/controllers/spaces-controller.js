@@ -3,6 +3,11 @@ const spaceModel = require("../../models/space-model");
 const coworkingModel = require("../../models/coworking-model");
 const ApiError = require("../../exceptions/api-errors");
 
+const ErrorBd = {
+  AvalableAmountMustBeLesThanAmount: "23514",
+  WrongFieldsInserted: "22P02",
+};
+
 class SpacesController {
   async getSpaces(req, res) {
     try {
@@ -55,8 +60,12 @@ class SpacesController {
         return res.send(ApiError.AccessDeniedForRole("User not owner"));
       }
     } catch (error) {
-      if (error.code === "22P02") {
-        return res.json(ApiError.BadRequest(`Not allowed send empty fields`));
+      if (error.code === ErrorBd.WrongFieldsInserted) {
+        return res.json(ApiError.BadRequest("Not allowed send empty fields"));
+      } else if (error.code === ErrorBd.AvalableAmountMustBeLesThanAmount) {
+        return res.json(
+          ApiError.BadRequest("field available_amount must be les than amount"),
+        );
       } else {
         console.error(error);
         return res.json(ApiError.IntServError(error.detail));
@@ -100,8 +109,12 @@ class SpacesController {
       }
     } catch (error) {
       await trx.rollback();
-      if (error.code === "22P02") {
-        return res.json(ApiError.BadRequest(`Not allowed send empty fields`));
+      if (error.code === ErrorBd.WrongFieldsInserted) {
+        return res.json(ApiError.BadRequest("Not allowed send empty fields"));
+      } else if (error.code === ErrorBd.AvalableAmountMustBeLesThanAmount) {
+        return res.json(
+          ApiError.BadRequest("field available_amount must be les than amount"),
+        );
       } else {
         console.error(error);
         return res.json(ApiError.IntServError(error.detail));

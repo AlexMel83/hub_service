@@ -1,12 +1,13 @@
 const spacesController = require("../controllers/spaces-controller");
-const { body, query, validationResult } = require("express-validator");
+const { body, query } = require("express-validator");
 const authMiddleware = require("../../middlewares/auth-middleware");
 const upload = require("../../middlewares/upload");
-const ApiError = require("../../exceptions/api-errors");
+const validateMiddleware = require("../../middlewares/validate-middleware");
 
 const validateSpace = [
   body("space_name")
     .notEmpty()
+    .withMessage("space_name is required")
     .isString()
     .withMessage('Поле "space_name" має бути рядком'),
   body("description")
@@ -20,7 +21,21 @@ const validateSpace = [
   body("amount")
     .optional({ checkFalsy: true })
     .isNumeric()
-    .withMessage('Поле "amount" має бути числом'),
+    .withMessage('Поле "amount" має бути числом')
+    .isInt({ min: 0 })
+    .withMessage('Поле "amount" має бути більше або дорівнювати 0'),
+  body("available_amount")
+    .optional({ checkFalsy: true })
+    .isNumeric()
+    .withMessage('Поле "available_amount" має бути числом')
+    .isInt({ min: 0 })
+    .withMessage('Поле "available_amount" має бути більше або дорівнювати 0')
+    .custom((value, { req }) => {
+      if (req.body.amount && value > req.body.amount) {
+        throw new Error('Поле "available_amount" не може бути більше "amount"');
+      }
+      return true;
+    }),
   body("first_price")
     .optional({ checkFalsy: true })
     .isNumeric()
@@ -32,7 +47,23 @@ const validateSpace = [
 ];
 
 module.exports = function (app) {
-  app.get("/spaces", spacesController.getSpaces);
+  app.get(
+    "/spaces",
+    query("id")
+      .optional({ checkFalsy: true })
+      .isNumeric()
+      .withMessage("id is number"),
+    query("user_id")
+      .optional({ checkFalsy: true })
+      .isNumeric()
+      .withMessage("user_id is number"),
+    query("name")
+      .optional({ checkFalsy: true })
+      .isString()
+      .withMessage("name is string"),
+    validateMiddleware,
+    spacesController.getSpaces,
+  );
 
   app.post(
     "/spaces",
@@ -40,15 +71,7 @@ module.exports = function (app) {
     upload.single("space_photo"),
     validateSpace,
     body("coworking_id").notEmpty().withMessage("coworking_id is required"),
-    (req, res, next) => {
-      const errors = validationResult(req);
-      if (!errors.isEmpty()) {
-        return res.json(
-          ApiError.BadRequest("Помилка при валідації", errors.array()),
-        );
-      }
-      next();
-    },
+    validateMiddleware,
     spacesController.addSpace,
   );
 
@@ -61,20 +84,12 @@ module.exports = function (app) {
     body("coworking_id").custom((value, { req }) => {
       if ("coworking_id" in req.body) {
         throw new Error(
-          `Перезапис поля 'coworking_id' зі значенням ${value} недопустима`,
+          `Перезапис поля 'coworking_id' зі значенням ${value} недозволено`,
         );
       }
       return true;
     }),
-    (req, res, next) => {
-      const errors = validationResult(req);
-      if (!errors.isEmpty()) {
-        return res.json(
-          ApiError.BadRequest("Помилка при валідації", errors.array()),
-        );
-      }
-      next();
-    },
+    validateMiddleware,
     spacesController.updateSpace,
   );
 
@@ -82,15 +97,7 @@ module.exports = function (app) {
     "/spaces",
     authMiddleware,
     query("id").notEmpty().withMessage("Id is required"),
-    (req, res, next) => {
-      const errors = validationResult(req);
-      if (!errors.isEmpty()) {
-        return res.json(
-          ApiError.BadRequest("Помилка при валідації", errors.array()),
-        );
-      }
-      next();
-    },
+    validateMiddleware,
     spacesController.removeSpace,
   );
 };

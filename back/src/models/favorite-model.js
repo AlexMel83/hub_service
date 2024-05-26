@@ -16,7 +16,6 @@ module.exports = {
   },
 
   async getFavoritesByUserId(user_id) {
-    console.log(user_id);
     try {
       return await knex(favoriteSpacesTable)
         .join("spaces as s", "favorite_spaces.space_id", "s.id")
@@ -25,6 +24,7 @@ module.exports = {
           ...favoriteSpacesFields,
           "s.space_name as space_name",
           "c.coworking_name as coworking_name",
+          "c.address as coworking_address",
         ])
         .where("favorite_spaces.user_id", user_id);
     } catch (error) {

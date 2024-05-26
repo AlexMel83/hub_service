@@ -15,7 +15,11 @@ const server = http.createServer(app);
 app.use(
   cors({
     credentials: true,
-    origin: [process.env.CLIENT_URL, "http://localhost:3000"],
+    origin: [
+      process.env.CLIENT_URL,
+      process.env.PAYMENT_DOMEN,
+      "http://localhost:3000",
+    ],
     exposedHeaders: ["Access-Control-Allow-Credentials"],
   }),
 );

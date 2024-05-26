@@ -39,10 +39,16 @@ exports.up = async function (knex) {
         table.text("description").nullable();
         table.string("space_photo", 100).nullable();
         table.integer("amount").nullable();
+        table.integer("available_amount").unsigned().nullable();
         table.integer("first_price").nullable();
         table.text("last_price").nullable();
         table.integer("coworking_id").references("id").inTable("coworkings");
       });
+      await trx.raw(`
+        ALTER TABLE spaces
+        ADD CONSTRAINT amount_check CHECK (available_amount >= 0 
+        AND (available_amount <= amount OR amount IS NULL))
+      `);
     }
 
     if (!advantagesExist) {
