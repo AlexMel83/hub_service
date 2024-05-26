@@ -2,12 +2,13 @@ version: "3.8"
 
 services:
   api:
-    container_name: eduhub_api
-    build: .
+    container_name: hub_api
+    build:
+      context: ./back
     env_file:
       - .env
     volumes:
-      - .:/app/
+      - ./back:/app
       - /app/node_modules
     ports:
       - ${PORT}:4040
@@ -17,7 +18,7 @@ services:
     restart: always
 
   postgres:
-    container_name: eduhub_bd
+    container_name: hub_bd
     image: postgis/postgis:16-master
     env_file:
       - .env
@@ -32,6 +33,22 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
       - ./pgdata:/var/lib/postgresql/data
+    restart: always
+
+  nuxt:
+    container_name: nuxt_app
+    build:
+      context: ./front
+    env_file:
+      - .env
+    volumes:
+      - ./front:/app
+      - /app/node_modules
+    ports:
+      - ${NUXT_PORT}:3000
+    command: npm run dev
+    depends_on:
+      - api
     restart: always
 
 volumes:

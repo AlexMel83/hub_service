@@ -53,5 +53,5 @@
     "update": "^0.7.4",
     "uuid": "^9.0.1"
   },
-  "description": "project of INTA students"
+  "description": "Backend of hub-service"
 }

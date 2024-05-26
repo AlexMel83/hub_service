@@ -40,7 +40,7 @@ export default defineNuxtConfig({
         {
           name: "discription",
           content:
-            "EduHUB- обирай коворкінг для ефективного навчання та роботи.",
+            "HUB- обирай коворкінг для ефективного навчання та роботи.",
         },
         {
           name: "viewport",

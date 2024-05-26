@@ -1,9 +1,0 @@
-FROM node:22.1-alpine
-WORKDIR /app
-
-COPY . .
-RUN npm install --force
-EXPOSE 3000
-
-COPY ./docker/app/entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh

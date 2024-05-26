@@ -1,8 +1,8 @@
 import axios from "axios";
 import { useStore } from "vuex";
 
-const baseURL = "https://hub-api.intita.com";
-// const baseURL = "http://localhost:4041";
+// const baseURL = "https://hub-api.intita.com";
+const baseURL = "http://localhost:4040";
 
 let api, tokenAxios;
 
